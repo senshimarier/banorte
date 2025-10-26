@@ -3,190 +3,547 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proyección Financiera - Banorte</title>
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/styles.css">
-
+    <title>Proyectar - Sistema Financiero</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background: #f5f5f5;
-    }
-    
-    .navbar {
-        background: #004085;
-        color: white;
-        padding: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .navbar-brand h2 {
-        margin: 0;
-    }
-    
-    .navbar-menu a {
-        color: white;
-        text-decoration: none;
-        margin-right: 15px;
-    }
-    
-    .btn-logout {
-        background: #dc3545;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    
-    .container {
-        max-width: 800px;
-        margin: 30px auto;
-        padding: 0 20px;
-    }
-    
-    .card {
-        background: white;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .form-group {
-        margin-bottom: 20px;
-    }
-    
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-    
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-sizing: border-box;
-    }
-    
-    .btn {
-        background: #007bff;
-        color: white;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-    
-    .btn:hover {
-        background: #0056b3;
-    }
-</style>
+        /* ===== VARIABLES Y ESTILOS BASE ===== */
+        :root {
+            --primary-color: #E30613;
+            --primary-dark: #B2040F;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --white: #fff;
+            --shadow: 0 4px 10px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== HEADER Y NAVEGACIÓN RESPONSIVE ===== */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            background-color: rgba(227, 6, 19, 0.1);
+            color: var(--primary-color);
+        }
+
+        .nav-link.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* ===== MENÚ HAMBURGUESA ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            width: 30px;
+            height: 21px;
+            justify-content: space-between;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--text-color);
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+        }
+
+        /* ===== CAJA INFORMATIVA ===== */
+        .info-box {
+            background-color: #fff3f3;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 100%;
+            text-align: left;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        /* ===== FORMULARIO ===== */
+        form {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        form label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: 600;
+            text-align: left;
+            color: var(--text-color);
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-top: 0.4rem;
+            font-size: 1rem;
+        }
+
+        form button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 1rem;
+            width: 100%;
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        form button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
+        /* ===== RESULTADOS ===== */
+        .result-card {
+            background-color: var(--white);
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            width: 100%;
+            animation: fadeIn 1s ease;
+        }
+
+        .result-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* ===== ESTILOS DE IA ===== */
+        .ai-insights {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .ai-insights h4 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            line-height: 1.8;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background-color: var(--text-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+
+        /* ===== MODAL DE CONFIRMACIÓN ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .modal-btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-confirm {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .modal-cancel {
+            background-color: #ccc;
+            color: var(--text-color);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        /* ===== MEDIA QUERIES ===== */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .main-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 1rem 0;
+                transform: translateY(-150%);
+                transition: transform 0.4s ease;
+                z-index: 99;
+            }
+
+            .main-nav.active {
+                transform: translateY(0);
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 0;
+                width: 100%;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 1rem 1.5rem;
+                border-radius: 0;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+
+            .logout-btn {
+                margin: 1rem 1.5rem 0;
+                width: calc(100% - 3rem);
+            }
+
+            form {
+                padding: 1.5rem;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main {
+                padding: 1.5rem 0.75rem;
+            }
+
+            form {
+                padding: 1.25rem;
+            }
+
+            .result-card {
+                padding: 1.25rem;
+            }
+
+            .info-box {
+                padding: 0.75rem 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <h2>Banorte - Proyección Financiera</h2>
+    <header>
+        <div class="logo-container">
+            <img src="img/logo-banorte.png" alt="Banorte Logo" class="logo">
         </div>
-        <div class="navbar-menu">
-            <a href="dashboard.html">Dashboard</a>
-            <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+        
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
-    </nav>
+        
+        <nav class="main-nav" id="mainNav">
+            <ul class="nav-links">
+                <li><a href="dashboard.html" class="nav-link">Inicio</a></li>
+                <li><a href="consultar.html" class="nav-link">Consulta</a></li>
+                <li><a href="analizar.html" class="nav-link">Análisis</a></li>
+                <li><a href="simular.html" class="nav-link">Simulación</a></li>
+                <li><a href="proyectar.html" class="nav-link active">Proyección</a></li>
+                <li><a href="comparar.html" class="nav-link">Comparar</a></li>
+            </ul>
+            <button class="logout-btn" id="logoutBtn">Cerrar sesión</button>
+        </nav>
+    </header>
 
-    <div class="container">
-        <div class="card">
-            <h1>Proyección Financiera con IA</h1>
-            <p>Genera proyecciones estimadas con análisis avanzado de IA.</p>
-
-            <form id="proyectarForm" class="form">
-                <!-- Tipo (seleccionable) -->
-                <div class="form-group">
-                    <label for="tipo">Tipo: *</label>
-                    <select id="tipo" name="tipo" required>
-                        <option value="">Seleccione tipo</option>
-                        <option value="personal">Personal</option>
-                        <option value="empresa">Empresarial</option>
-                    </select>
-                </div>
-
-                <!-- ID (requerido) -->
-                <div class="form-group">
-                    <label for="id">ID (Usuario/Empresa): *</label>
-                    <input type="text" id="id" name="id" placeholder="Ingrese ID" required>
-                    <small>Campo obligatorio para proyección</small>
-                </div>
-
-                <!-- Periodo (depende del tipo) -->
-                <div class="form-group" id="periodoGroup">
-                    <label for="periodo">Periodo: *</label>
-                    <select id="periodo" name="periodo" required>
-                        <option value="">Seleccione periodo...</option>
-                    </select>
-                </div>
-
-                <!-- Tasa de crecimiento esperada (seleccionable) -->
-                <div class="form-group">
-                    <label for="tasaCrecimiento">Tasa de Crecimiento Esperada:</label>
-                    <select id="tasaCrecimiento" name="tasaCrecimiento">
-                        <option value="conservador">Conservador (3-5%)</option>
-                        <option value="moderado" selected>Moderado (5-8%)</option>
-                        <option value="agresivo">Agresivo (8-12%)</option>
-                    </select>
-                </div>
-
-                <!-- Escenario (seleccionable) -->
-                <div class="form-group">
-                    <label for="escenario">Escenario de Proyección:</label>
-                    <select id="escenario" name="escenario">
-                        <option value="optimista">Optimista</option>
-                        <option value="realista" selected>Realista</option>
-                        <option value="pesimista">Pesimista</option>
-                    </select>
-                </div>
-
-                <!-- Incluir inflación (seleccionable) -->
-                <div class="form-group">
-                    <label for="inflacion">Ajustar por Inflación:</label>
-                    <select id="inflacion" name="inflacion">
-                        <option value="si">Sí</option>
-                        <option value="no" selected>No</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn">Proyectar con IA</button>
-            </form>
-
-            <div id="resultado" class="resultado"></div>
+    <main>
+        <h1>Proyección Financiera con IA</h1>
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i> Genera proyecciones estimadas con análisis avanzado de IA.
         </div>
-    </div>
 
-    <div id="logoutModal" class="modal">
+        <form id="proyectarForm">
+            <label for="tipo">Tipo: *</label>
+            <select id="tipo" required>
+                <option value="">Seleccione tipo</option>
+                <option value="personal">Personal</option>
+                <option value="empresa">Empresarial</option>
+            </select>
+
+            <label for="id">ID (Usuario/Empresa): *</label>
+            <input type="text" id="id" placeholder="Ingrese ID" required>
+
+            <label for="periodo">Periodo: *</label>
+            <select id="periodo" required>
+                <option value="">Seleccione periodo...</option>
+            </select>
+
+            <label for="tasaCrecimiento">Tasa de Crecimiento Esperada:</label>
+            <select id="tasaCrecimiento">
+                <option value="conservador">Conservador (3-5%)</option>
+                <option value="moderado" selected>Moderado (5-8%)</option>
+                <option value="agresivo">Agresivo (8-12%)</option>
+            </select>
+
+            <label for="escenario">Escenario de Proyección:</label>
+            <select id="escenario">
+                <option value="optimista">Optimista</option>
+                <option value="realista" selected>Realista</option>
+                <option value="pesimista">Pesimista</option>
+            </select>
+
+            <label for="inflacion">Ajustar por Inflación:</label>
+            <select id="inflacion">
+                <option value="si">Sí</option>
+                <option value="no" selected>No</option>
+            </select>
+
+            <button type="submit"><i class="fas fa-chart-line"></i> Proyectar con IA</button>
+        </form>
+
+        <div id="result" class="result-card" style="display: none;">
+            <h3>Proyección Financiera</h3>
+            <p id="projection"></p>
+            <p id="recomendacion"></p>
+            <div id="aiInsights"></div>
+        </div>
+    </main>
+
+    <div class="modal" id="logoutModal">
         <div class="modal-content">
-            <h3>¿Estás seguro de que quieres cerrar sesión?</h3>
+            <h2>¿Estás seguro de que quieres cerrar sesión?</h2>
             <p>Serás redirigido a la página de inicio de sesión.</p>
-            <button onclick="confirmLogout()" class="btn">Sí, cerrar sesión</button>
-            <button onclick="closeModal()" class="btn-secondary">Cancelar</button>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-confirm" id="confirmLogout">Sí, cerrar sesión</button>
+                <button class="modal-btn modal-cancel" id="cancelLogout">Cancelar</button>
+            </div>
         </div>
     </div>
 
-    <script src="js/auth.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/ai-enhanced.js"></script>
-    <script>
-    // Solo para testing - NO usar en producción
-    aiAssistant.setAPIKey('AIzaSyAhcEfOyXYexbkC3Remhoi3_M-syfveU9o');
-    </script>
+    <footer>
+        © 2025 Banorte | Sistema Financiero Inteligente
+    </footer>
 
+    <script src="js/api.js"></script>
     <script>
+        const hamburger = document.getElementById('hamburger');
+        const mainNav = document.getElementById('mainNav');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mainNav.classList.toggle('active');
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mainNav.classList.remove('active');
+            });
+        });
+
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutModal = document.getElementById('logoutModal');
+        const confirmLogout = document.getElementById('confirmLogout');
+        const cancelLogout = document.getElementById('cancelLogout');
+
+        logoutBtn.addEventListener('click', () => {
+            logoutModal.style.display = 'flex';
+        });
+
+        confirmLogout.addEventListener('click', () => {
+            localStorage.removeItem('userSession');
+            sessionStorage.removeItem('userToken');
+            alert('Sesión cerrada correctamente');
+            window.location.href = 'login.html';
+        });
+
+        cancelLogout.addEventListener('click', () => {
+            logoutModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === logoutModal) {
+                logoutModal.style.display = 'none';
+            }
+        });
+
         const periodos = {
             personal: [
                 { value: '3', label: '3 meses' },
@@ -205,9 +562,11 @@
             ]
         };
 
-        document.getElementById('tipo').addEventListener('change', function() {
+        const tipoSelect = document.getElementById('tipo');
+        const periodoSelect = document.getElementById('periodo');
+
+        tipoSelect.addEventListener('change', function() {
             const tipo = this.value;
-            const periodoSelect = document.getElementById('periodo');
             periodoSelect.innerHTML = '<option value="">Seleccione periodo...</option>';
             
             if (tipo && periodos[tipo]) {
@@ -234,81 +593,46 @@
                 inflacion: document.getElementById('inflacion').value
             };
 
-            const validation = await aiAssistant.validateFormData('proyectar', formData);
-            if (!validation.valid) {
-                alert(validation.message);
-                return;
-            }
+            const resultEl = document.getElementById('result');
+            const projectionEl = document.getElementById('projection');
+            const recEl = document.getElementById('recomendacion');
+            const aiInsightsEl = document.getElementById('aiInsights');
 
-            const resultado = document.getElementById('resultado');
-            resultado.innerHTML = '<div class="loading">Proyectando con IA...</div>';
+            resultEl.style.display = 'none';
+            projectionEl.textContent = 'Proyectando con IA...';
+            recEl.textContent = '';
+            aiInsightsEl.innerHTML = '';
 
             try {
                 const periodos = tipo === 'personal' ? formData.meses : formData.trimestres;
                 const backendResult = await proyectar(tipo, periodos, formData.id);
                 
-                const enhancedResult = await aiAssistant.enhanceResults('proyectar', formData, backendResult);
-                displayResults(enhancedResult);
+                let enhancedResult = backendResult;
+                if (typeof aiAssistant !== 'undefined') {
+                    enhancedResult = await aiAssistant.enhanceResults('proyectar', formData, backendResult);
+                }
+                
+                projectionEl.textContent = enhancedResult.projection || 'Sin proyección disponible';
+                recEl.textContent = enhancedResult.recomendacion || 'Sin recomendación';
+                
+                if (enhancedResult.enhanced && enhancedResult.aiInsights) {
+                    aiInsightsEl.innerHTML = `
+                        <div class="ai-insights">
+                            <h4><i class="fas fa-brain"></i> Análisis Predictivo con IA</h4>
+                            <div class="ai-content">
+                                ${enhancedResult.aiInsights.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                resultEl.style.display = 'block';
             } catch (error) {
-                resultado.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                console.error('Error:', error);
+                projectionEl.textContent = 'Error: ' + (error.message || error);
+                resultEl.style.display = 'block';
             }
         });
-
-        function displayResults(result) {
-            const resultado = document.getElementById('resultado');
-            
-            let html = '<div class="result-card">';
-            html += '<h2>Proyección Financiera</h2>';
-            
-            if (result.projection) {
-                html += `<div class="result-section projection-highlight">
-                    <strong>Proyección:</strong> $${result.projection.toLocaleString('es-MX', {minimumFractionDigits: 2})}
-                </div>`;
-            }
-            
-            if (result.recomendacion) {
-                html += `<div class="result-section"><strong>Recomendación:</strong> ${result.recomendacion}</div>`;
-            }
-            
-            if (result.enhanced && result.aiInsights) {
-                html += '<div class="ai-insights">';
-                html += '<h3>🤖 Análisis Predictivo con IA</h3>';
-                html += `<div class="ai-content">${formatAIResponse(result.aiInsights)}</div>`;
-                html += '</div>';
-            }
-            
-            html += '</div>';
-            resultado.innerHTML = html;
-        }
-
-        function formatAIResponse(text) {
-            return text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        }
-
-        function logout() {
-            document.getElementById('logoutModal').style.display = 'flex';
-        }
-
-        function confirmLogout() {
-            localStorage.removeItem('token');
-            window.location.href = 'login.html';
-        }
-
-        function closeModal() {
-            document.getElementById('logoutModal').style.display = 'none';
-        }
-
-        checkAuth();
     </script>
-
-    <style>
-        .projection-highlight {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-size: 1.2em;
-            padding: 20px;
-            border-radius: 8px;
-        }
-    </style>
 </body>
 </html>

@@ -4,116 +4,567 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Análisis Financiero - Banorte</title>
-    <link rel="stylesheet" href="frontend\css\dashboard.css">
-    <link rel="stylesheet" href="frontend\css\styles.css>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== VARIABLES Y ESTILOS BASE ===== */
+        :root {
+            --primary-color: #E30613;
+            --primary-dark: #B2040F;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --white: #fff;
+            --shadow: 0 4px 10px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== HEADER Y NAVEGACIÓN RESPONSIVE ===== */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            background-color: rgba(227, 6, 19, 0.1);
+            color: var(--primary-color);
+        }
+
+        .nav-link.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* ===== MENÚ HAMBURGUESA ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            width: 30px;
+            height: 21px;
+            justify-content: space-between;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--text-color);
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+        }
+
+        /* ===== CAJA INFORMATIVA ===== */
+        .info-box {
+            background-color: #fff3f3;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 100%;
+            text-align: left;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        /* ===== FORMULARIO ===== */
+        form {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        form label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: 600;
+            text-align: left;
+            color: var(--text-color);
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-top: 0.4rem;
+            font-size: 1rem;
+        }
+
+        form button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 1rem;
+            width: 100%;
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        form button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
+        /* ===== RESULTADOS ===== */
+        .result-card {
+            background-color: var(--white);
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            width: 100%;
+            animation: fadeIn 1s ease;
+        }
+
+        .result-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* ===== ESTILOS DE IA ===== */
+        .ai-insights {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .ai-insights h4 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            line-height: 1.8;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background-color: var(--text-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+
+        /* ===== MODAL DE CONFIRMACIÓN ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .modal-btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-confirm {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .modal-cancel {
+            background-color: #ccc;
+            color: var(--text-color);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        /* ===== MEDIA QUERIES ===== */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .main-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 1rem 0;
+                transform: translateY(-150%);
+                transition: transform 0.4s ease;
+                z-index: 99;
+            }
+
+            .main-nav.active {
+                transform: translateY(0);
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 0;
+                width: 100%;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 1rem 1.5rem;
+                border-radius: 0;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+
+            .logout-btn {
+                margin: 1rem 1.5rem 0;
+                width: calc(100% - 3rem);
+            }
+
+            form {
+                padding: 1.5rem;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main {
+                padding: 1.5rem 0.75rem;
+            }
+
+            form {
+                padding: 1.25rem;
+            }
+
+            .result-card {
+                padding: 1.25rem;
+            }
+
+            .info-box {
+                padding: 0.75rem 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <h2>Banorte - Análisis Financiero</h2>
+    <header>
+        <div class="logo-container">
+            <img src="img/logo-banorte.png" alt="Banorte Logo" class="logo">
         </div>
-        <div class="navbar-menu">
-            <a href="dashboard.html">Dashboard</a>
-            <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+        
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
-    </nav>
+        
+        <nav class="main-nav" id="mainNav">
+            <ul class="nav-links">
+                <li><a href="dashboard.html" class="nav-link">Inicio</a></li>
+                <li><a href="consultar.html" class="nav-link">Consulta</a></li>
+                <li><a href="analizar.html" class="nav-link active">Análisis</a></li>
+                <li><a href="simular.html" class="nav-link">Simulación</a></li>
+                <li><a href="proyectar.html" class="nav-link">Proyección</a></li>
+                <li><a href="comparar.html" class="nav-link">Comparar</a></li>
+            </ul>
+            <button class="logout-btn" id="logoutBtn">Cerrar sesión</button>
+        </nav>
+    </header>
 
-    <div class="container">
-        <div class="card">
-            <h1>Análisis Financiero Inteligente</h1>
-            <p>Esta página permite realizar un análisis detallado con IA de los movimientos financieros.</p>
-
-            <form id="analizarForm" class="form">
-                <div class="form-group">
-                    <label for="tipo">Tipo de análisis: *</label>
-                    <select id="tipo" name="tipo" required>
-                        <option value="">Seleccione...</option>
-                        <option value="personal">Personal</option>
-                        <option value="empresa">Empresarial</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="id">ID (Usuario / Empresa): *</label>
-                    <input type="text" id="id" name="id" placeholder="Ingrese ID" required>
-                    <small>Campo requerido para análisis específico</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="fecha">Fecha:</label>
-                    <input type="date" id="fecha" name="fecha">
-                </div>
-
-                <div class="form-group">
-                    <label for="categoria">Categoría:</label>
-                    <select id="categoria" name="categoria">
-                        <option value="">Seleccione un tipo primero...</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="tipoTransaccion">Tipo de Transacción:</label>
-                    <select id="tipoTransaccion" name="tipoTransaccion">
-                        <option value="">Todos</option>
-                        <option value="ingreso">Ingreso</option>
-                        <option value="gasto">Gasto</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="descripcion">Descripción / Concepto:</label>
-                    <select id="descripcion" name="descripcion">
-                        <option value="">Todas</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="rangoMonto">Rango de Monto:</label>
-                    <select id="rangoMonto" name="rangoMonto">
-                        <option value="">Todos</option>
-                        <option value="0-1000">$0 - $1,000</option>
-                        <option value="1000-5000">$1,000 - $5,000</option>
-                        <option value="5000-10000">$5,000 - $10,000</option>
-                        <option value="10000-50000">$10,000 - $50,000</option>
-                        <option value="50000+">Más de $50,000</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn">Analizar con IA</button>
-            </form>
-
-            <div id="resultado" class="resultado"></div>
+    <main>
+        <h1>Análisis Financiero Inteligente</h1>
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i> Esta página permite realizar un análisis detallado con IA de tus movimientos financieros, 
+            identificando patrones de gasto, oportunidades de ahorro y proporcionando recomendaciones personalizadas.
         </div>
-    </div>
 
-    <div id="logoutModal" class="modal">
+        <form id="analizarForm">
+            <label for="tipo">Tipo de análisis: *</label>
+            <select id="tipo" required>
+                <option value="">Seleccione...</option>
+                <option value="personal">Personal</option>
+                <option value="empresa">Empresarial</option>
+            </select>
+
+            <label for="id">ID (Usuario / Empresa): *</label>
+            <input type="text" id="id" placeholder="Ingrese ID" required>
+
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha">
+
+            <label for="categoria">Categoría:</label>
+            <select id="categoria">
+                <option value="">Seleccione un tipo primero...</option>
+            </select>
+
+            <label for="tipoTransaccion">Tipo de Transacción:</label>
+            <select id="tipoTransaccion">
+                <option value="">Todos</option>
+                <option value="ingreso">Ingreso</option>
+                <option value="gasto">Gasto</option>
+            </select>
+
+            <label for="descripcion">Descripción / Concepto:</label>
+            <select id="descripcion">
+                <option value="">Todas</option>
+            </select>
+
+            <label for="rangoMonto">Rango de Monto:</label>
+            <select id="rangoMonto">
+                <option value="">Todos</option>
+                <option value="0-1000">$0 - $1,000</option>
+                <option value="1000-5000">$1,000 - $5,000</option>
+                <option value="5000-10000">$5,000 - $10,000</option>
+                <option value="10000-50000">$10,000 - $50,000</option>
+                <option value="50000+">Más de $50,000</option>
+            </select>
+
+            <button type="submit"><i class="fas fa-chart-line"></i> Analizar con IA</button>
+        </form>
+
+        <div id="result" class="result-card" style="display: none;">
+            <h3>Resultado del Análisis</h3>
+            <p id="analisis"></p>
+            <p id="recomendacion"></p>
+            <div id="aiInsights"></div>
+        </div>
+    </main>
+
+    <!-- Modal de confirmación de cierre de sesión -->
+    <div class="modal" id="logoutModal">
         <div class="modal-content">
-            <h3>¿Estás seguro de que quieres cerrar sesión?</h3>
+            <h2>¿Estás seguro de que quieres cerrar sesión?</h2>
             <p>Serás redirigido a la página de inicio de sesión.</p>
-            <button onclick="confirmLogout()" class="btn">Sí, cerrar sesión</button>
-            <button onclick="closeModal()" class="btn-secondary">Cancelar</button>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-confirm" id="confirmLogout">Sí, cerrar sesión</button>
+                <button class="modal-btn modal-cancel" id="cancelLogout">Cancelar</button>
+            </div>
         </div>
     </div>
 
-    <script src="js/auth.js"></script>
+    <footer>
+        © 2025 Banorte | Sistema Financiero Inteligente
+    </footer>
+
     <script src="js/api.js"></script>
-    <script src="js/ai-enhanced.js"></script>
     <script>
-    // Solo para testing - NO usar en producción
-    aiAssistant.setAPIKey('AIzaSyAhcEfOyXYexbkC3Remhoi3_M-syfveU9o');
-    </script>
-    
-    <script>
+        // ===== MENÚ HAMBURGUESA =====
+        const hamburger = document.getElementById('hamburger');
+        const mainNav = document.getElementById('mainNav');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mainNav.classList.toggle('active');
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mainNav.classList.remove('active');
+            });
+        });
+
+        // ===== LOGOUT FUNCIONAL =====
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutModal = document.getElementById('logoutModal');
+        const confirmLogout = document.getElementById('confirmLogout');
+        const cancelLogout = document.getElementById('cancelLogout');
+
+        logoutBtn.addEventListener('click', () => {
+            logoutModal.style.display = 'flex';
+        });
+
+        confirmLogout.addEventListener('click', () => {
+            localStorage.removeItem('userSession');
+            sessionStorage.removeItem('userToken');
+            alert('Sesión cerrada correctamente');
+            window.location.href = 'login.html';
+        });
+
+        cancelLogout.addEventListener('click', () => {
+            logoutModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === logoutModal) {
+                logoutModal.style.display = 'none';
+            }
+        });
+
+        // ===== CATEGORÍAS DINÁMICAS =====
         const categorias = {
             personal: ['Transporte', 'Alimentación', 'Vivienda', 'Entretenimiento', 'Salud', 'Educación', 'Ahorro'],
             empresa: ['Ventas', 'Marketing', 'Operaciones', 'Recursos Humanos', 'I+D', 'Logística']
         };
 
-        document.getElementById('tipo').addEventListener('change', function() {
+        const tipoSelect = document.getElementById('tipo');
+        const categoriaSelect = document.getElementById('categoria');
+        const descripcionSelect = document.getElementById('descripcion');
+
+        tipoSelect.addEventListener('change', function() {
             const tipo = this.value;
-            const categoriaSelect = document.getElementById('categoria');
-            const descripcionSelect = document.getElementById('descripcion');
-            
             categoriaSelect.innerHTML = '<option value="">Seleccione categoría...</option>';
             
             if (tipo && categorias[tipo]) {
@@ -126,10 +577,8 @@
             }
         });
 
-        document.getElementById('categoria').addEventListener('change', function() {
-            const descripcionSelect = document.getElementById('descripcion');
+        categoriaSelect.addEventListener('change', function() {
             descripcionSelect.innerHTML = '<option value="">Todas</option>';
-            
             const descripcionesComunes = ['Pago regular', 'Pago extraordinario', 'Ajuste', 'Compensación'];
             descripcionesComunes.forEach(desc => {
                 const option = document.createElement('option');
@@ -139,6 +588,7 @@
             });
         });
 
+        // ===== LÓGICA DEL FORMULARIO CON IA =====
         document.getElementById('analizarForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -152,167 +602,49 @@
                 rangoMonto: document.getElementById('rangoMonto').value
             };
 
-            const resultado = document.getElementById('resultado');
-            resultado.innerHTML = '<div class="loading">Analizando con IA...</div>';
+            const resultEl = document.getElementById('result');
+            const analisisEl = document.getElementById('analisis');
+            const recEl = document.getElementById('recomendacion');
+            const aiInsightsEl = document.getElementById('aiInsights');
+
+            resultEl.style.display = 'none';
+            analisisEl.textContent = 'Analizando con IA...';
+            recEl.textContent = '';
+            aiInsightsEl.innerHTML = '';
 
             try {
+                // Llamar al backend
                 const backendResult = await analizar(formData.tipo, formData.id);
                 
+                // Mejorar con IA si está disponible
                 let enhancedResult = backendResult;
                 if (typeof aiAssistant !== 'undefined') {
                     enhancedResult = await aiAssistant.enhanceResults('analizar', formData, backendResult);
                 }
                 
-                displayResults(enhancedResult);
+                // Mostrar resultados
+                analisisEl.textContent = enhancedResult.analisis || 'Sin análisis disponible';
+                recEl.textContent = enhancedResult.recomendacion || 'Sin recomendación';
+                
+                // Mostrar insights de IA si existen
+                if (enhancedResult.enhanced && enhancedResult.aiInsights) {
+                    aiInsightsEl.innerHTML = `
+                        <div class="ai-insights">
+                            <h4><i class="fas fa-brain"></i> Análisis Avanzado con IA</h4>
+                            <div class="ai-content">
+                                ${enhancedResult.aiInsights.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                resultEl.style.display = 'block';
             } catch (error) {
                 console.error('Error:', error);
-                resultado.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                analisisEl.textContent = 'Error: ' + (error.message || error);
+                resultEl.style.display = 'block';
             }
         });
-
-        function displayResults(result) {
-            const resultado = document.getElementById('resultado');
-            
-            let html = '<div class="result-card">';
-            html += '<h2>Resultado del Análisis</h2>';
-            
-            if (result.analisis) {
-                html += `<div class="result-section"><strong>Análisis:</strong> ${result.analisis}</div>`;
-            }
-            
-            if (result.recomendacion) {
-                html += `<div class="result-section"><strong>Recomendación:</strong> ${result.recomendacion}</div>`;
-            }
-            
-            if (result.enhanced && result.aiInsights) {
-                html += '<div class="ai-insights">';
-                html += '<h3>🤖 Análisis Avanzado con IA</h3>';
-                html += `<div class="ai-content">${formatAIResponse(result.aiInsights)}</div>`;
-                html += '</div>';
-            }
-            
-            html += '</div>';
-            resultado.innerHTML = html;
-        }
-
-        function formatAIResponse(text) {
-            return text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        }
-
-        function logout() {
-            document.getElementById('logoutModal').style.display = 'flex';
-        }
-
-        function confirmLogout() {
-            localStorage.removeItem('token');
-            window.location.href = 'login.html';
-        }
-
-        function closeModal() {
-            document.getElementById('logoutModal').style.display = 'none';
-        }
-
-        if (typeof checkAuth === 'function') {
-            checkAuth();
-        }
     </script>
-
-    <style>
-        .ai-insights {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .ai-insights h3 {
-            margin-top: 0;
-        }
-        
-        .ai-content {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            line-height: 1.6;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            font-style: italic;
-            color: #666;
-        }
-        
-        .loading::before {
-            content: "⏳ ";
-            font-size: 1.5em;
-        }
-        
-        .error {
-            color: #dc3545;
-            padding: 15px;
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-        
-        .result-card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-        
-        .result-section {
-            margin: 15px 0;
-            padding: 12px;
-            background: #f8f9fa;
-            border-left: 4px solid #007bff;
-            border-radius: 5px;
-        }
-        
-        small {
-            display: block;
-            margin-top: 5px;
-            color: #666;
-            font-size: 0.85em;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 400px;
-        }
-        
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-    </style>
 </body>
 </html>

@@ -1,48 +1,59 @@
-const API_BASE = 'http://localhost:5000/api';
+// frontend/js/api.js
+const API_BASE_URL = 'http://localhost:5000/api/v1';
 
-async function fetchAPI(endpoint, options = {}) {
+async function fetchAPI(endpoint) {
     try {
-        const response = await fetch(`${API_BASE}${endpoint}`, options);
+        const response = await fetch(`${API_BASE_URL}${endpoint}`);
         if (!response.ok) throw new Error('Error en la API');
         return await response.json();
     } catch (error) {
         console.error('Error en fetchAPI:', error);
-        alert('Error al conectar con el servidor. Verifica que el backend esté corriendo.');
-        return null;
+        throw error;
     }
 }
 
-// Funciones específicas (ajustadas a las llamadas en HTML)
+// PROYECCIONES
 async function proyectar(tipo, periodos, id) {
-    const endpoint = `/v1/${tipo}/proyectar?${tipo === 'personal' ? 'meses' : 'trimestres'}=${periodos}&${tipo === 'personal' ? 'id_usuario' : 'empresa_id'}=${id}`;
-    return await fetchAPI(endpoint);
+    if (tipo === 'personal') {
+        return await fetchAPI(`/personal/proyectar?meses=${periodos}&usuario_id=${id}`);
+    } else {
+        return await fetchAPI(`/empresa/proyectar?trimestres=${periodos}&empresa_id=${id}`);
+    }
 }
 
-async function consultar(tipo, categoria, rangoFechas, id = '') {
-    const params = `categoria=${categoria}&rango_fechas=${rangoFechas}${id ? `&id_usuario=${id}` : ''}`;
-    return await fetchAPI(`/v1/${tipo}/consultar?${params}`);
-}
-
+// SIMULACIONES
 async function simular(tipo, cambio, categoria) {
-    const body = tipo === 'personal' ? { cambio_gasto: cambio, categoria } : { cambio_costo: cambio, categoria };
-    return await fetchAPI(`/v1/${tipo}/simular`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
+    if (tipo === 'personal') {
+        return await fetchAPI(`/personal/simular?cambio=${cambio}&categoria=${categoria}`);
+    } else {
+        return await fetchAPI(`/empresa/simular?cambio=${cambio}&categoria=${categoria}`);
+    }
 }
 
+// ANÁLISIS
 async function analizar(tipo, id) {
-    const endpoint = `/v1/${tipo}/analizar?${tipo === 'personal' ? 'id_usuario' : 'empresa_id'}=${id}`;
-    return await fetchAPI(endpoint);
+    if (tipo === 'personal') {
+        return await fetchAPI(`/personal/analizar?usuario_id=${id}`);
+    } else {
+        return await fetchAPI(`/empresa/analizar?empresa_id=${id}`);
+    }
 }
 
-async function comparar(tipo, categoria, periodo1, periodo2, id = '') {
-    const params = `categoria=${categoria}&periodo1=${periodo1}&periodo2=${periodo2}${id ? `&empresa_id=${id}` : ''}`;
-    return await fetchAPI(`/v1/${tipo}/comparar?${params}`);
+// COMPARAR
+async function comparar(tipo, categoria, periodo1, periodo2, id) {
+    if (tipo === 'personal') {
+        return await fetchAPI(`/personal/comparar?categoria=${categoria}&periodo1=${periodo1}&periodo2=${periodo2}`);
+    } else {
+        return await fetchAPI(`/empresa/comparar?categoria=${categoria}&periodo1=${periodo1}&periodo2=${periodo2}&empresa_id=${id || ''}`);
+    }
 }
 
-async function analizar(tipo, id) {
-    const endpoint = `/v1/${tipo}/analizar?${tipo === 'personal' ? 'id_usuario' : 'empresa_id'}=${id}`;
-    return await fetchAPI(endpoint);
+// CONSULTAR
+async function consultar(tipo, categoria, rangoFechas, id) {
+    const [fechaInicio, fechaFin] = rangoFechas.split('-');
+    if (tipo === 'personal') {
+        return await fetchAPI(`/personal/consultar?categoria=${categoria}&fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&usuario_id=${id || ''}`);
+    } else {
+        return await fetchAPI(`/empresa/consultar?categoria=${categoria}&fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&empresa_id=${id || ''}`);
+    }
 }
