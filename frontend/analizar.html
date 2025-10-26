@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizar - Sistema Financiero</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== VARIABLES Y ESTILOS BASE ===== */
+        :root {
+            --primary-color: #E30613;
+            --primary-dark: #B2040F;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --white: #fff;
+            --shadow: 0 4px 10px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== HEADER Y NAVEGACIÓN RESPONSIVE ===== */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            background-color: rgba(227, 6, 19, 0.1);
+            color: var(--primary-color);
+        }
+
+        .nav-link.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* ===== MENÚ HAMBURGUESA ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            width: 30px;
+            height: 21px;
+            justify-content: space-between;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--text-color);
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+        }
+
+        /* ===== FORMULARIO ===== */
+        form {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        form label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: 600;
+            text-align: left;
+            color: var(--text-color);
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-top: 0.4rem;
+            font-size: 1rem;
+        }
+
+        form button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 1rem;
+            width: 100%;
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        form button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
+        /* ===== RESULTADOS ===== */
+        .result-card {
+            background-color: var(--white);
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            width: 100%;
+            animation: fadeIn 1s ease;
+        }
+
+        .result-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background-color: var(--text-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+
+        /* ===== MODAL DE CONFIRMACIÓN ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .modal-btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-confirm {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .modal-cancel {
+            background-color: #ccc;
+            color: var(--text-color);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        /* ===== MEDIA QUERIES ===== */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .main-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 1rem 0;
+                transform: translateY(-150%);
+                transition: transform 0.4s ease;
+                z-index: 99;
+            }
+
+            .main-nav.active {
+                transform: translateY(0);
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 0;
+                width: 100%;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 1rem 1.5rem;
+                border-radius: 0;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+
+            .logout-btn {
+                margin: 1rem 1.5rem 0;
+                width: calc(100% - 3rem);
+            }
+
+            form {
+                padding: 1.5rem;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main {
+                padding: 1.5rem 0.75rem;
+            }
+
+            form {
+                padding: 1.25rem;
+            }
+
+            .result-card {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="img/logo-banorte.png" alt="Banorte Logo" class="logo">
+        </div>
+        
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <nav class="main-nav" id="mainNav">
+            <ul class="nav-links">
+                <li><a href="dashboard.html" class="nav-link">Inicio</a></li>
+                <li><a href="consultar.html" class="nav-link">Consulta</a></li>
+                <li><a href="analizar.html" class="nav-link active">Análisis</a></li>
+                <li><a href="simular.html" class="nav-link">Simulación</a></li>
+                <li><a href="proyectar.html" class="nav-link">Proyección</a></li>
+                <li><a href="comparar.html" class="nav-link">Comparar</a></li>
+            </ul>
+            <button class="logout-btn" id="logoutBtn">Cerrar sesión</button>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Análisis Financiero</h1>
+        <p>Completa los campos para obtener un análisis detallado.</p>
+
+        <form id="analizarForm">
+            <label for="tipo">Tipo de análisis:</label>
+            <select id="tipo" required>
+                <option value="">Seleccione...</option>
+                <option value="personal">Personal</option>
+                <option value="empresarial">Empresarial</option>
+            </select>
+
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" required>
+
+            <label for="categoria">Categoría:</label>
+            <select id="categoria" required>
+                <option value="">Seleccione un tipo primero...</option>
+            </select>
+
+            <label for="concepto">Descripción / Concepto:</label>
+            <select id="concepto" required>
+                <option value="">Seleccione una categoría...</option>
+            </select>
+
+            <label for="id">ID (Usuario / Empresa):</label>
+            <input type="text" id="id" placeholder="Ej: USR-2025-01" required>
+
+            <label for="monto">Monto:</label>
+            <input type="number" id="monto" placeholder="Ej: 5000.00" step="0.01" required>
+
+            <button type="submit">Analizar</button>
+        </form>
+
+        <div id="result" class="result-card" style="display: none;">
+            <h3>Resultado del análisis</h3>
+            <p id="analisis"></p>
+            <p id="recomendacion"></p>
+        </div>
+    </main>
+
+    <!-- Modal de confirmación de cierre de sesión -->
+    <div class="modal" id="logoutModal">
+        <div class="modal-content">
+            <h2>¿Estás seguro de que quieres cerrar sesión?</h2>
+            <p>Serás redirigido a la página de inicio de sesión.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-confirm" id="confirmLogout">Sí, cerrar sesión</button>
+                <button class="modal-btn modal-cancel" id="cancelLogout">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2025 Banorte | Sistema Financiero Inteligente
+    </footer>
+
+    <script>
+        // ===== MENÚ HAMBURGUESA =====
+        const hamburger = document.getElementById('hamburger');
+        const mainNav = document.getElementById('mainNav');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mainNav.classList.toggle('active');
+        });
+
+        // Cerrar menú al hacer clic en un enlace
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mainNav.classList.remove('active');
+            });
+        });
+
+        // ===== LOGOUT FUNCIONAL =====
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutModal = document.getElementById('logoutModal');
+        const confirmLogout = document.getElementById('confirmLogout');
+        const cancelLogout = document.getElementById('cancelLogout');
+
+        // Mostrar modal al hacer clic en "Cerrar sesión"
+        logoutBtn.addEventListener('click', () => {
+            logoutModal.style.display = 'flex';
+        });
+
+        // Confirmar cierre de sesión
+        confirmLogout.addEventListener('click', () => {
+            // Limpiar datos de sesión (simulado)
+            localStorage.removeItem('userSession');
+            sessionStorage.removeItem('userToken');
+            
+            // Mostrar mensaje de confirmación
+            alert('Sesión cerrada correctamente');
+            
+            // Redirigir a página de login
+            window.location.href = 'login.html';
+        });
+
+        // Cancelar cierre de sesión
+        cancelLogout.addEventListener('click', () => {
+            logoutModal.style.display = 'none';
+        });
+
+        // Cerrar modal al hacer clic fuera del contenido
+        window.addEventListener('click', (e) => {
+            if (e.target === logoutModal) {
+                logoutModal.style.display = 'none';
+            }
+        });
+
+        // ===== LÓGICA DEL FORMULARIO =====
+        const categorias = {
+            personal: {
+                "Ingreso": { tipo: "ingreso", conceptos: ["Nómina mensual", "Honorarios", "Inversión", "Venta de bien"] },
+                "Transporte": { tipo: "gasto", conceptos: ["Uber", "Gasolina", "Mantenimiento coche", "Peaje"] },
+                "Supermercado": { tipo: "gasto", conceptos: ["Walmart", "Tienda de barrio", "Costco", "Mercado"] },
+                "Restaurantes": { tipo: "gasto", conceptos: ["Starbucks", "Restaurante de lujo", "Puesto callejero", "Fast food"] },
+                "Entretenimiento": { tipo: "gasto", conceptos: ["Netflix", "Spotify", "Cine", "Teatro", "Bar"] },
+                "Servicios": { tipo: "gasto", conceptos: ["Electricidad", "Agua", "Teléfono", "Internet"] },
+                "Salud": { tipo: "gasto", conceptos: ["Farmacia", "Consulta médica", "Seguro médico"] },
+                "Vivienda": { tipo: "gasto", conceptos: ["Renta", "Hipoteca", "Mantenimiento casa"] },
+                "Educación": { tipo: "gasto", conceptos: ["Curso en línea", "Colegiatura", "Libros"] },
+                "Ahorro": { tipo: "gasto", conceptos: ["Transferencia AFORE", "Cuenta de ahorro"] }
+            },
+            empresarial: {
+                "Ventas": { tipo: "ingreso", conceptos: ["Venta producto A", "Venta producto B", "Venta servicio"] },
+                "Inversión": { tipo: "ingreso", conceptos: ["Intereses ganados", "Inversión en activos"] },
+                "Costos": { tipo: "gasto", conceptos: ["Compra inventario", "Materiales directos"] },
+                "Personal": { tipo: "gasto", conceptos: ["Nómina operativa", "Nómina administrativa", "Prestaciones", "Honorarios"] },
+                "Infraestructura": { tipo: "gasto", conceptos: ["Renta oficina", "Servicios públicos", "Mantenimiento equipos"] },
+                "Marketing": { tipo: "gasto", conceptos: ["Publicidad digital", "Eventos", "Diseño gráfico"] },
+                "Administración": { tipo: "gasto", conceptos: ["Servicios contables", "Servicios legales", "Viajes de negocio"] }
+            }
+        };
+
+        const tipoSelect = document.getElementById("tipo");
+        const categoriaSelect = document.getElementById("categoria");
+        const conceptoSelect = document.getElementById("concepto");
+
+        tipoSelect.addEventListener("change", () => {
+            const tipo = tipoSelect.value;
+            categoriaSelect.innerHTML = '<option value="">Seleccione una categoría...</option>';
+            conceptoSelect.innerHTML = '<option value="">Seleccione una categoría...</option>';
+            if (categorias[tipo]) {
+                Object.keys(categorias[tipo]).forEach(cat => {
+                    const option = document.createElement("option");
+                    option.value = cat;
+                    option.textContent = cat;
+                    categoriaSelect.appendChild(option);
+                });
+            }
+        });
+
+        categoriaSelect.addEventListener("change", () => {
+            const tipo = tipoSelect.value;
+            const cat = categoriaSelect.value;
+            conceptoSelect.innerHTML = '<option value="">Seleccione un concepto...</option>';
+            if (categorias[tipo] && categorias[tipo][cat]) {
+                categorias[tipo][cat].conceptos.forEach(con => {
+                    const opt = document.createElement("option");
+                    opt.value = con;
+                    opt.textContent = con;
+                    conceptoSelect.appendChild(opt);
+                });
+            }
+        });
+
+        document.getElementById('analizarForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const tipo = tipoSelect.value;
+            const id = document.getElementById('id').value.trim();
+            const resultEl = document.getElementById('result');
+            const analisisEl = document.getElementById('analisis');
+            const recEl = document.getElementById('recomendacion');
+
+            resultEl.style.display = 'none';
+            analisisEl.textContent = 'Procesando...';
+            recEl.textContent = '';
+
+            try {
+                if (typeof analizar === 'function') {
+                    const res = await analizar(tipo, id);
+                    analisisEl.textContent = res?.analisis ?? JSON.stringify(res);
+                    recEl.textContent = res?.recomendacion ?? '';
+                } else {
+                    analisisEl.textContent = `Análisis simulado para "${tipo}" (ID: ${id}).`;
+                    recEl.textContent = 'Aquí va una recomendación simulada. 4';
+                }
+            } catch (err) {
+                analisisEl.textContent = 'Error al analizar: ' + (err.message || err);
+                recEl.textContent = '';
+            } finally {
+                resultEl.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Principal - Sistema Financiero Banorte</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ==================== ESTILO GLOBAL ==================== */
+        :root {
+            --rojo-banorte: #E30613;
+            --rojo-oscuro: #B2040F;
+            --gris-fondo: #f7f7f7;
+            --gris-texto: #333;
+            --blanco: #ffffff;
+            --sombra-suave: 0 4px 10px rgba(0,0,0,0.08);
+            --transicion: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--gris-fondo);
+            color: var(--gris-texto);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ==================== HEADER RESPONSIVE ==================== */
+        header {
+            background-color: var(--rojo-banorte);
+            color: var(--blanco);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.2rem;
+            margin: 0 2rem;
+        }
+
+        .nav-link {
+            color: var(--blanco);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            transition: var(--transicion);
+        }
+
+        .nav-link:hover {
+            background: var(--blanco);
+            color: var(--rojo-banorte);
+        }
+
+        .logout-btn {
+            background-color: transparent;
+            border: 2px solid var(--blanco);
+            color: var(--blanco);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transicion);
+        }
+
+        .logout-btn:hover {
+            background-color: var(--blanco);
+            color: var(--rojo-banorte);
+        }
+
+        /* ==================== MENÚ HAMBURGUESA ==================== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            width: 30px;
+            height: 21px;
+            justify-content: space-between;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--blanco);
+            border-radius: 3px;
+            transition: var(--transicion);
+        }
+
+        /* ==================== BANNER / IMAGEN PRINCIPAL ==================== */
+        .banner-section {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 0 1rem;
+        }
+
+        .banner {
+            width: 90%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: var(--sombra-suave);
+            animation: fadeIn 1s ease;
+        }
+
+        #sc2 {
+            width: 80vw;
+            max-width: 500px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* ==================== BIENVENIDA / TITULO ==================== */
+        .welcome {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 0 1rem;
+        }
+
+        .welcome h1 {
+            color: var(--rojo-banorte);
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .welcome p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        /* ==================== MENÚ DE BOTONES ==================== */
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 3rem;
+        }
+
+        .menu-buttons button {
+            width: 80%;
+            max-width: 400px;
+            padding: 1.2rem;
+            background-color: var(--rojo-banorte);
+            color: var(--blanco);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--sombra-suave);
+            transition: var(--transicion);
+        }
+
+        .menu-buttons button:hover {
+            background-color: var(--rojo-oscuro);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+        }
+
+        .menu-buttons button:active {
+            transform: translateY(0);
+        }
+
+        /* ==================== SECCIONES INTERNAS ==================== */
+        .section-container {
+            background-color: var(--blanco);
+            padding: 1.5rem;
+            margin: 1.5rem auto;
+            border-radius: 10px;
+            max-width: 900px;
+            box-shadow: var(--sombra-suave);
+            animation: fadeIn 0.8s ease;
+        }
+
+        .section-container h2 {
+            color: var(--rojo-banorte);
+            margin-bottom: 1rem;
+        }
+
+        .section-container p {
+            color: #555;
+        }
+
+        /* ==================== TABLAS / RESULTADOS ==================== */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: var(--sombra-suave);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--rojo-banorte);
+            color: var(--blanco);
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        /* ==================== PIE DE PÁGINA ==================== */
+        footer {
+            background-color: var(--rojo-banorte);
+            color: var(--blanco);
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        /* ==================== ANIMACIONES ==================== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* ==================== MODAL DE CONFIRMACIÓN ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--blanco);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .modal-btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transicion);
+        }
+
+        .modal-confirm {
+            background-color: var(--rojo-banorte);
+            color: var(--blanco);
+        }
+
+        .modal-cancel {
+            background-color: #ccc;
+            color: var(--gris-texto);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ==================== RESPONSIVE DESIGN ==================== */
+        @media (max-width: 768px) {
+            header {
+                padding: 0.8rem 1rem;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .main-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--rojo-banorte);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 1rem 0;
+                transform: translateY(-150%);
+                transition: transform 0.4s ease;
+                z-index: 99;
+            }
+
+            .main-nav.active {
+                transform: translateY(0);
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 0;
+                margin: 0;
+                width: 100%;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 1rem 1.5rem;
+                border-radius: 0;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .logout-btn {
+                margin: 1rem 1.5rem 0;
+                width: calc(100% - 3rem);
+            }
+
+            .logo {
+                height: 45px;
+            }
+
+            .banner {
+                width: 95%;
+                max-width: 600px;
+            }
+
+            #sc2 {
+                width: 90vw;
+                max-width: 400px;
+            }
+
+            .welcome h1 {
+                font-size: 1.7rem;
+            }
+
+            .menu-buttons button {
+                width: 90%;
+                max-width: 350px;
+                font-size: 1.1rem;
+                padding: 1rem;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome h1 {
+                font-size: 1.5rem;
+            }
+
+            .welcome p {
+                font-size: 1rem;
+            }
+
+            .menu-buttons button {
+                width: 95%;
+                font-size: 1rem;
+                padding: 0.9rem;
+            }
+
+            #sc2 {
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header>
+        <div class="logo-container">
+            <img src="../frontend/img/logo-banorte.png" alt="Banorte Logo" class="logo">
+        </div>
+        
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <nav class="main-nav" id="mainNav">
+            <ul class="nav-links">           
+                <li><a href="consultar.html" class="nav-link">Consultar</a></li>
+                <li><a href="analizar.html" class="nav-link">Analizar</a></li>
+                <li><a href="simular.html" class="nav-link">Simular</a></li>
+                <li><a href="proyectar.html" class="nav-link">Proyectar</a></li>
+                <li><a href="comparar.html" class="nav-link">Comparar</a></li>
+            </ul>
+            <button class="logout-btn" id="logoutBtn">Cerrar sesión</button>
+        </nav>
+    </header>
+
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <main>
+        <!-- Imagen / Banner -->
+        <section class="banner-section">
+            <img src="../frontend/img/banorte-banner.png" alt="Banner Banorte" class="banner" id="sc2">
+        </section>
+
+        <!-- Bienvenida -->
+        <section class="welcome">
+            <h1>Bienvenido a tu panel financiero</h1>
+            <p>Selecciona una opción para continuar</p>
+        </section>
+
+        <!-- Botones principales -->
+        <section class="menu-buttons">
+            <button onclick="location.href='consultar.html'">Consultar</button>
+            <button onclick="location.href='analizar.html'">Analizar</button>
+            <button onclick="location.href='simular.html'">Simular</button>
+            <button onclick="location.href='proyectar.html'">Proyectar</button>
+            <button onclick="location.href='comparar.html'">Comparar</button>
+        </section>
+    </main>
+
+    <!-- ===== MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN ===== -->
+    <div class="modal" id="logoutModal">
+        <div class="modal-content">
+            <h2>¿Estás seguro de que quieres cerrar sesión?</h2>
+            <p>Serás redirigido a la página de inicio de sesión.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-confirm" id="confirmLogout">Sí, cerrar sesión</button>
+                <button class="modal-btn modal-cancel" id="cancelLogout">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PIE DE PÁGINA ===== -->
+    <footer>
+        <p>© 2025 Banco Banorte | Sistema Financiero Corporativo</p>
+    </footer>
+
+    <script>
+        // ===== MENÚ HAMBURGUESA =====
+        const hamburger = document.getElementById('hamburger');
+        const mainNav = document.getElementById('mainNav');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mainNav.classList.toggle('active');
+        });
+
+        // Cerrar menú al hacer clic en un enlace
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mainNav.classList.remove('active');
+            });
+        });
+
+        // ===== CIERRE DE SESIÓN FUNCIONAL =====
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutModal = document.getElementById('logoutModal');
+        const confirmLogout = document.getElementById('confirmLogout');
+        const cancelLogout = document.getElementById('cancelLogout');
+
+        // Mostrar modal al hacer clic en "Cerrar sesión"
+        logoutBtn.addEventListener('click', () => {
+            logoutModal.style.display = 'flex';
+        });
+
+        // Confirmar cierre de sesión
+        confirmLogout.addEventListener('click', () => {
+            // Aquí iría la lógica real de cierre de sesión
+            // Por ahora simulamos redirección a página de login
+            alert('Sesión cerrada correctamente');
+            window.location.href = 'login.html'; // Cambia por tu URL de login
+        });
+
+        // Cancelar cierre de sesión
+        cancelLogout.addEventListener('click', () => {
+            logoutModal.style.display = 'none';
+        });
+
+        // Cerrar modal al hacer clic fuera del contenido
+        window.addEventListener('click', (e) => {
+            if (e.target === logoutModal) {
+                logoutModal.style.display = 'none';
+            }
+        });
+
+        // ===== MEJORA DE IMÁGENES =====
+        // Precargar imágenes para mejor rendimiento
+        window.addEventListener('load', () => {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                // Asegurar que las imágenes mantengan su calidad
+                img.loading = 'eager';
+            });
+        });
+    </script>
+</body>
+</html>

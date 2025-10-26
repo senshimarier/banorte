@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultar - Sistema Financiero</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ===== VARIABLES Y ESTILOS BASE ===== */
+    :root {
+      --primary-color: #E30613;
+      --primary-dark: #B2040F;
+      --text-color: #333;
+      --light-gray: #f4f4f4;
+      --white: #fff;
+      --shadow: 0 4px 10px rgba(0,0,0,0.08);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--light-gray);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== HEADER Y NAVEGACIÓN RESPONSIVE ===== */
+    header {
+      background-color: var(--primary-dark);
+      color: var(--white);
+      padding: 1rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo {
+      height: 40px;
+      width: auto;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--white);
+      font-weight: 600;
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #ffcc00;
+    }
+
+    .nav-link.active {
+      background-color: var(--white);
+      color: var(--primary-dark);
+    }
+
+    .logout-btn {
+      background-color: var(--white);
+      color: var(--primary-dark);
+      border: none;
+      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .logout-btn:hover {
+      background-color: #ffe6e6;
+    }
+
+    /* ===== MENÚ HAMBURGUESA ===== */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      width: 30px;
+      height: 21px;
+      justify-content: space-between;
+    }
+
+    .hamburger span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background-color: var(--white);
+      border-radius: 3px;
+      transition: var(--transition);
+    }
+
+    /* ===== CONTENIDO PRINCIPAL ===== */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    /* ===== CAJA INFORMATIVA ===== */
+    .info-box {
+      background-color: #fff3f3;
+      border-left: 4px solid var(--primary-color);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 100%;
+      text-align: left;
+      font-size: 0.95rem;
+      color: var(--text-color);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    /* ===== FORMULARIO ===== */
+    form {
+      background-color: var(--white);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      max-width: 600px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      animation: fadeIn 0.6s ease;
+    }
+
+    label {
+      font-weight: 600;
+      text-align: left;
+    }
+
+    select, input, button {
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    select:focus, input:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 5px rgba(227,6,19,0.3);
+    }
+
+    button[type="submit"] {
+      background-color: var(--primary-color);
+      color: var(--white);
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+    }
+
+    button[type="submit"]:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-3px);
+    }
+
+    .date-range {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .date-range input {
+      flex: 1;
+    }
+
+    /* ===== RESULTADOS ===== */
+    .result-card {
+      background-color: var(--white);
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      max-width: 600px;
+      width: 100%;
+      display: none;
+      text-align: left;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .result-card h3 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background-color: var(--text-color);
+      color: var(--white);
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: auto;
+    }
+
+    /* ===== MODAL DE CONFIRMACIÓN ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: var(--white);
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    .modal-btn {
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .modal-confirm {
+      background-color: var(--primary-color);
+      color: var(--white);
+    }
+
+    .modal-cancel {
+      background-color: #ccc;
+      color: var(--text-color);
+    }
+
+    .modal-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ===== ANIMACIONES ===== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== MEDIA QUERIES ===== */
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .main-nav {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background-color: var(--primary-dark);
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem 0;
+        transform: translateY(-150%);
+        transition: transform 0.4s ease;
+        z-index: 99;
+      }
+
+      .main-nav.active {
+        transform: translateY(0);
+      }
+
+      .nav-links {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+      }
+
+      .nav-link {
+        display: block;
+        padding: 1rem 1.5rem;
+        border-radius: 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .logout-btn {
+        margin: 1rem 1.5rem 0;
+        width: calc(100% - 3rem);
+      }
+
+      form {
+        padding: 1.5rem;
+      }
+
+      .date-range {
+        flex-direction: column;
+      }
+
+      .hamburger.active span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+      }
+
+      .hamburger.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger.active span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+      }
+
+      .modal-content {
+        padding: 1.5rem;
+      }
+
+      .modal-buttons {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      main {
+        padding: 1.5rem 0.75rem;
+      }
+
+      form {
+        padding: 1.25rem;
+      }
+
+      .result-card {
+        padding: 1.25rem;
+      }
+
+      .info-box {
+        padding: 0.75rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="img/logo-banorte.png" alt="Banorte Logo" class="logo">
+  </div>
+  
+  <div class="hamburger" id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  
+  <nav class="main-nav" id="mainNav">
+    <ul class="nav-links">
+      <li><a href="dashboard.html" class="nav-link">Inicio</a></li>
+      <li><a href="consultar.html" class="nav-link active">Consulta</a></li>
+      <li><a href="analizar.html" class="nav-link">Análisis</a></li>
+      <li><a href="simular.html" class="nav-link">Simulación</a></li>
+      <li><a href="proyectar.html" class="nav-link">Proyección</a></li>
+      <li><a href="comparar.html" class="nav-link">Comparar</a></li>
+    </ul>
+    <button class="logout-btn" id="logoutBtn">Cerrar sesión</button>
+  </nav>
+</header>
+
+<main>
+  <h1>Consulta de Movimientos</h1>
+  <div class="info-box">
+    Esta página permite consultar los movimientos financieros de un usuario o empresa dentro de un rango de fechas,
+    mostrando los resultados y recomendaciones de manera clara y estructurada.
+  </div>
+
+  <form id="consultarForm">
+    <label for="tipo">Tipo:</label>
+    <select id="tipo" required>
+      <option value="">Seleccione tipo</option>
+      <option value="personal">Personal</option>
+      <option value="empresarial">Empresarial</option>
+    </select>
+
+    <label for="categoria">Categoría:</label>
+    <select id="categoria" required>
+      <option value="">Seleccione categoría</option>
+    </select>
+
+    <label for="rangoFechas">Rango de Fechas:</label>
+    <div class="date-range">
+      <input type="date" id="fechaInicio" required>
+      <input type="date" id="fechaFin" required>
+    </div>
+
+    <label for="id">ID (Opcional para Personal):</label>
+    <input type="text" id="id" placeholder="ID de usuario o empresa">
+
+    <button type="submit">Consultar</button>
+  </form>
+
+  <div id="result" class="result-card">
+    <h3>Resultado</h3>
+    <p id="consulta"></p>
+    <p id="recomendacion"></p>
+  </div>
+</main>
+
+<!-- Modal de confirmación de cierre de sesión -->
+<div class="modal" id="logoutModal">
+  <div class="modal-content">
+    <h2>¿Estás seguro de que quieres cerrar sesión?</h2>
+    <p>Serás redirigido a la página de inicio de sesión.</p>
+    <div class="modal-buttons">
+      <button class="modal-btn modal-confirm" id="confirmLogout">Sí, cerrar sesión</button>
+      <button class="modal-btn modal-cancel" id="cancelLogout">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2025 Banorte | Sistema Financiero Inteligente
+</footer>
+
+<script>
+  // ===== MENÚ HAMBURGUESA =====
+  const hamburger = document.getElementById('hamburger');
+  const mainNav = document.getElementById('mainNav');
+
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    mainNav.classList.toggle('active');
+  });
+
+  // Cerrar menú al hacer clic en un enlace
+  const navLinks = document.querySelectorAll('.nav-link');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('active');
+      mainNav.classList.remove('active');
+    });
+  });
+
+  // ===== LOGOUT FUNCIONAL =====
+  const logoutBtn = document.getElementById('logoutBtn');
+  const logoutModal = document.getElementById('logoutModal');
+  const confirmLogout = document.getElementById('confirmLogout');
+  const cancelLogout = document.getElementById('cancelLogout');
+
+  // Mostrar modal al hacer clic en "Cerrar sesión"
+  logoutBtn.addEventListener('click', () => {
+    logoutModal.style.display = 'flex';
+  });
+
+  // Confirmar cierre de sesión
+  confirmLogout.addEventListener('click', () => {
+    // Limpiar datos de sesión (simulado)
+    localStorage.removeItem('userSession');
+    sessionStorage.removeItem('userToken');
+    
+    // Mostrar mensaje de confirmación
+    alert('Sesión cerrada correctamente');
+    
+    // Redirigir a página de login
+    window.location.href = 'login.html';
+  });
+
+  // Cancelar cierre de sesión
+  cancelLogout.addEventListener('click', () => {
+    logoutModal.style.display = 'none';
+  });
+
+  // Cerrar modal al hacer clic fuera del contenido
+  window.addEventListener('click', (e) => {
+    if (e.target === logoutModal) {
+      logoutModal.style.display = 'none';
+    }
+  });
+
+  // ===== LÓGICA DEL FORMULARIO =====
+  const categorias = {
+    personal: ["Ingreso", "Transporte", "Supermercado", "Restaurantes", "Entretenimiento",
+      "Servicios", "Salud", "Vivienda", "Educación", "Ahorro"],
+    empresarial: ["Ventas", "Inversión", "Costos", "Personal",
+      "Infraestructura", "Marketing", "Administración"]
+  };
+
+  const tipoSelect = document.getElementById('tipo');
+  const categoriaSelect = document.getElementById('categoria');
+
+  tipoSelect.addEventListener('change', () => {
+    const tipo = tipoSelect.value;
+    categoriaSelect.innerHTML = '<option value="">Seleccione categoría</option>';
+    if (categorias[tipo]) {
+      categorias[tipo].forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.toLowerCase();
+        opt.textContent = cat;
+        categoriaSelect.appendChild(opt);
+      });
+    }
+  });
+
+  document.getElementById('consultarForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const tipo = tipoSelect.value;
+    const categoria = categoriaSelect.value;
+    const fechaInicio = document.getElementById('fechaInicio').value;
+    const fechaFin = document.getElementById('fechaFin').value;
+    const id = document.getElementById('id').value.trim();
+
+    if (!tipo || !categoria || !fechaInicio || !fechaFin) {
+      alert("Por favor completa todos los campos requeridos.");
+      return;
+    }
+
+    const resultEl = document.getElementById('result');
+    const consultaEl = document.getElementById('consulta');
+    const recEl = document.getElementById('recomendacion');
+
+    try {
+      const result = typeof consultar === 'function'
+        ? await consultar(tipo, categoria, `${fechaInicio} - ${fechaFin}`, id)
+        : { consulta: `Consulta simulada para ${categoria} (${tipo}) de ${fechaInicio} a ${fechaFin}`, recomendacion: "Recomendación simulada." };
+
+      consultaEl.textContent = result.consulta;
+      recEl.textContent = result.recomendacion;
+      resultEl.style.display = "block";
+    } catch (err) {
+      console.error(err);
+      alert("Error al consultar la información.");
+    }
+  });
+</script>
+</body>
+</html>

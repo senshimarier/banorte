@@ -1,0 +1,248 @@
+/* ==================== ESTILO GLOBAL ==================== */
+:root {
+    --rojo-banorte: #E30613;
+    --rojo-oscuro: #B2040F;
+    --gris-fondo: #f7f7f7;
+    --gris-texto: #333;
+    --blanco: #ffffff;
+    --sombra-suave: 0 4px 10px rgba(0,0,0,0.08);
+    --transicion: all 0.3s ease;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--gris-fondo);
+    color: var(--gris-texto);
+}
+
+/* ==================== HEADER ==================== */
+header {
+    background-color: var(--rojo-banorte);
+    color: var(--blanco);
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.main-nav {
+    display: flex;
+    gap: 1.2rem;
+    margin: 0 2rem;
+}
+.nav-link {
+    color: var(--blanco);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    transition: var(--transicion);
+}
+.nav-link:hover {
+    background: var(--blanco);
+    color: var(--rojo-banorte);
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+}
+
+.logout-btn {
+    background-color: transparent;
+    border: 2px solid var(--blanco);
+    color: var(--blanco);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transicion);
+}
+
+.logout-btn:hover {
+    background-color: var(--blanco);
+    color: var(--rojo-banorte);
+}
+
+/* ==================== BANNER / IMAGEN PRINCIPAL ==================== */
+.banner-section {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.banner {
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: var(--sombra-suave);
+    animation: fadeIn 1s ease;
+}
+
+#sc2 {
+     width: 60vw;
+     max-width: 320px;
+     height: auto;
+     margin: 0 auto;
+     display: block;
+}
+
+/* ==================== BIENVENIDA / TITULO ==================== */
+.welcome {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.welcome h1 {
+    color: var(--rojo-banorte);
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+}
+
+.welcome p {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* ==================== MENÚ DE BOTONES ==================== */
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+.menu-buttons button {
+    width: 80%;
+    max-width: 320px;
+    padding: 1rem;
+    background-color: var(--rojo-banorte);
+    color: var(--blanco);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicion);
+}
+
+.menu-buttons button:hover {
+    background-color: var(--rojo-oscuro);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+.menu-buttons button:active {
+    transform: translateY(0);
+}
+
+/* ==================== SECCIONES INTERNAS ==================== */
+.section-container {
+    background-color: var(--blanco);
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+    border-radius: 10px;
+    max-width: 900px;
+    box-shadow: var(--sombra-suave);
+    animation: fadeIn 0.8s ease;
+}
+
+.section-container h2 {
+    color: var(--rojo-banorte);
+    margin-bottom: 1rem;
+}
+
+.section-container p {
+    color: #555;
+}
+
+/* ==================== TABLAS / RESULTADOS ==================== */
+.table-container {
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: var(--sombra-suave);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: var(--rojo-banorte);
+    color: var(--blanco);
+}
+
+tr:hover {
+    background-color: #f2f2f2;
+}
+
+/* ==================== PIE DE PÁGINA ==================== */
+footer {
+    background-color: var(--rojo-banorte);
+    color: var(--blanco);
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+}
+
+/* ==================== ANIMACIONES ==================== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 600px) {
+    header {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0.8rem 1rem;
+    }
+
+    .main-nav {
+        gap: 0.5rem;
+        margin: 0 0.2rem;
+        flex-wrap: wrap;
+    }
+    .nav-link {
+        font-size: 0.85rem;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .banner {
+        width: 95%;
+    }
+
+    .menu-buttons button {
+        width: 90%;
+        font-size: 1rem;
+        padding: 0.9rem;
+    }
+
+    .welcome h1 {
+        font-size: 1.5rem;
+    }
+
+    .section-container {
+        width: 95%;
+        padding: 1rem;
+    }
+}

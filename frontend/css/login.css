@@ -1,0 +1,132 @@
+ * {
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: linear-gradient(180deg, #e00000, #b00000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 15px;
+}
+
+    .login-container {
+      background: white;
+      width: 90%;
+      max-width: 360px;
+      border-radius: 20px;
+      padding: 30px 25px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      animation: fadeIn 0.7s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      width: 120px;
+      margin-bottom: 15px;
+      animation: bounce 2s infinite ease-in-out;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    h2 {
+      color: #b00000;
+      font-weight: 700;
+      margin-bottom: 25px;
+      font-size: 1.4em;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 40px 12px 15px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+
+    .input-group input:focus {
+      border-color: #b00000;
+    }
+
+    .input-group i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: gray;
+      cursor: pointer;
+    }
+
+    button {
+      width: 100%;
+      background: #e00000;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #b00000;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    @keyframes errorPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+    }
+
+    .error {
+      color: #ff0000;
+      font-size: 14px;
+      margin-top: 15px;
+      margin-bottom: 15px;
+      display: none;
+      padding: 10px;
+      background-color: #ffebeb;
+      border: 2px solid #ff0000;
+      border-radius: 8px;
+      font-weight: bold;
+      animation: errorPulse 1.5s infinite;
+      text-shadow: 0 0 1px rgba(255,0,0,0.2);
+      box-shadow: 0 0 10px rgba(255,0,0,0.1);
+    }
+
+    .input-group input.error-field {
+      border: 2px solid #ff0000;
+      background-color: #fff9f9;
+      animation: shake 0.5s;
+    }
+
+    .footer {
+      margin-top: 25px;
+      font-size: 13px;
+      color: gray;
+    }
