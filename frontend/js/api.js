@@ -6,13 +6,13 @@ async function fetchAPI(endpoint, options = {}) {
         if (!response.ok) throw new Error('Error en la API');
         return await response.json();
     } catch (error) {
-        console.error(error);
+        console.error('Error en fetchAPI:', error);
         alert('Error al conectar con el servidor. Verifica que el backend esté corriendo.');
         return null;
     }
 }
 
-// Funciones específicas para cada pantalla
+// Funciones específicas (ajustadas a las llamadas en HTML)
 async function proyectar(tipo, periodos, id) {
     const endpoint = `/v1/${tipo}/proyectar?${tipo === 'personal' ? 'meses' : 'trimestres'}=${periodos}&${tipo === 'personal' ? 'id_usuario' : 'empresa_id'}=${id}`;
     return await fetchAPI(endpoint);
@@ -40,4 +40,9 @@ async function analizar(tipo, id) {
 async function comparar(tipo, categoria, periodo1, periodo2, id = '') {
     const params = `categoria=${categoria}&periodo1=${periodo1}&periodo2=${periodo2}${id ? `&empresa_id=${id}` : ''}`;
     return await fetchAPI(`/v1/${tipo}/comparar?${params}`);
+}
+
+async function analizar(tipo, id) {
+    const endpoint = `/v1/${tipo}/analizar?${tipo === 'personal' ? 'id_usuario' : 'empresa_id'}=${id}`;
+    return await fetchAPI(endpoint);
 }
