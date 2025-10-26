@@ -1,22 +1,31 @@
+// backend/src/routes/financialRoutes.js - CORREGIDO
 const express = require('express');
-const {
-  proyectarPersonal, consultarPersonal, simularPersonal, analizarPersonal, compararPersonal,
-  proyectarEmpresarial, consultarEmpresarial, simularEmpresarial, analizarEmpresarial, compararEmpresarial
-} = require('../controllers/financialController');
 const router = express.Router();
+const {
+  proyectarPersonal, 
+  consultarPersonal, 
+  simularPersonal, 
+  analizarPersonal, 
+  compararPersonal,
+  proyectarEmpresarial, 
+  consultarEmpresarial, 
+  simularEmpresarial, 
+  analizarEmpresarial, 
+  compararEmpresarial
+} = require('../controllers/financialController');
 
-// Personal
-router.get('/v1/personal/proyectar', proyectarPersonal);
-router.get('/v1/personal/consultar', consultarPersonal);
-router.post('/v1/personal/simular', simularPersonal);
-router.get('/v1/personal/analizar', analizarPersonal);
-router.get('/v1/personal/comparar', compararPersonal);
+// ⭐ RUTAS PERSONALES (sin /v1 porque ya está en app.js)
+router.get('/personal/proyectar', proyectarPersonal);
+router.get('/personal/consultar', consultarPersonal);
+router.post('/personal/simular', simularPersonal);
+router.get('/personal/analizar', analizarPersonal);
+router.get('/personal/comparar', compararPersonal);
 
-// Empresarial
-router.get('/v1/empresarial/proyectar', proyectarEmpresarial);
-router.get('/v1/empresarial/consultar', consultarEmpresarial);
-router.post('/v1/empresarial/simular', simularEmpresarial);
-router.get('/v1/empresarial/analizar', analizarEmpresarial);
-router.get('/v1/empresarial/comparar', compararEmpresarial);
+// ⭐ RUTAS EMPRESARIALES (empresa, NO empresarial)
+router.get('/empresa/proyectar', proyectarEmpresarial);
+router.get('/empresa/consultar', consultarEmpresarial);
+router.post('/empresa/simular', simularEmpresarial);
+router.get('/empresa/analizar', analizarEmpresarial);
+router.get('/empresa/comparar', compararEmpresarial);
 
 module.exports = router;

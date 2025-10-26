@@ -1,94 +1,192 @@
+// backend/services/calculationService.js
 const math = require('mathjs');
-const OpenAI = require('openai');
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// Función para generar recomendaciones (intenta con Gemini, si falla usa recomendaciones básicas)
 async function generateAIRecommendation(context, action) {
-  const prompt = `Eres un asesor financiero IA. Datos: ${JSON.stringify(context)}. Acción: ${action}. Genera una recomendación adicional en español.`;
-  try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: prompt }],
-    });
-    return response.choices[0].message.content;
-  } catch (error) {
-    return 'Recomendación IA no disponible.';
-  }
+    const apiKey = process.env.GEMINI_API_KEY;
+    
+    // Si no hay API Key, usar recomendaciones básicas
+    if (!apiKey) {
+        console.warn('⚠️ GEMINI_API_KEY no configurada, usando recomendaciones básicas');
+        return generarRecomendacionBasica(context, action);
+    }
+
+    // Lista de modelos de Gemini a probar
+    const modelos = ['gemini-1.5-pro-latest', 'gemini-1.5-flash', 'gemini-pro'];
+    const prompt = `Eres asesor financiero de Banorte México. ${action}. Contexto: ${JSON.stringify(context)}. Responde en español (máximo 100 palabras).`;
+
+    // Intentar con cada modelo
+    for (const modelo of modelos) {
+        try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${apiKey}`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: { temperature: 0.7, maxOutputTokens: 250 }
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+                    console.log(`✅ IA activa con ${modelo}`);
+                    return data.candidates[0].content.parts[0].text;
+                }
+            }
+        } catch (error) {
+            console.log(`❌ ${modelo} falló:`, error.message);
+        }
+    }
+    
+    // Si todos fallan, usar recomendaciones básicas
+    console.log('⚠️ Usando recomendaciones predeterminadas');
+    return generarRecomendacionBasica(context, action);
 }
 
+// Recomendaciones predeterminadas
+function generarRecomendacionBasica(context, action) {
+    const recs = {
+        'proyección financiera personal': `Con tu saldo actual de $${(context.saldoActual || 0).toLocaleString('es-MX')}, proyectamos $${(context.saldoFinal || 0).toLocaleString('es-MX')} en ${context.meses || 0} meses. Mantén un fondo de emergencia de 3-6 meses de gastos y revisa tu presupuesto mensualmente.`,
+        
+        'proyección empresarial': `Proyección a ${context.trimestres || 0} trimestres: $${(context.saldoFinal || 0).toLocaleString('es-MX')}. Optimiza costos operativos y diversifica fuentes de ingreso.`,
+        
+        'simulación personal': `El cambio de $${context.cambio || 0} en "${context.categoria}" da un nuevo total de $${(context.nuevoTotal || 0).toLocaleString('es-MX')}. Implementa cambios gradualmente.`,
+        
+        'simulación empresarial': `Simulación en "${context.categoria}": nuevo total $${(context.nuevoTotal || 0).toLocaleString('es-MX')}. Evalúa impacto en otras áreas.`,
+        
+        'análisis personal': `Tasa de ahorro: ${context.tasaAhorro || 0}%. ${parseFloat(context.tasaAhorro || 0) > 20 ? 'Excelente gestión' : 'Considera reducir gastos no esenciales'}.`,
+        
+        'análisis empresarial': `Utilidad: $${(context.utilidad || 0).toLocaleString('es-MX')}. ${context.utilidad > 0 ? 'Margen positivo' : 'Revisa estructura de costos'}.`,
+        
+        'comparación personal': `Variación: ${context.diferencia > 0 ? 'incremento' : 'reducción'} de $${Math.abs(context.diferencia || 0).toLocaleString('es-MX')}. Ajusta presupuesto según tendencias.`,
+        
+        'comparación empresarial': `Variación: ${context.variacion >= 0 ? '+' : ''}$${(context.variacion || 0).toLocaleString('es-MX')}. Mantén monitoreo constante.`
+    };
+    return recs[action] || 'Mantén registro detallado de finanzas y revisa objetivos periódicamente.';
+}
+
+// PROYECCIONES
 async function projectPersonal(data, meses, id) {
-  const userData = data.filter(row => row.id === id);
-  const ingresos = userData.filter(row => row.tipo === 'ingreso').reduce((sum, row) => sum + row.monto, 0);
-  const gastos = userData.filter(row => row.tipo === 'gasto').reduce((sum, row) => sum + row.monto, 0);
-  const saldoActual = ingresos - gastos;
-  const projection = Array.from({length: meses}, (_, i) => saldoActual * (1 + 0.05 * i));
-  const recomendacion = saldoActual > 0 ? `Aumenta el ahorro en "Ahorro" en un 5% para alcanzar ${projection[meses-1] * 1.05}.` : `Reduce gastos en categorías altas para mejorar el saldo.`;
-  const aiRec = await generateAIRecommendation(userData, `Proyección a ${meses} meses`);
-  return { projection: projection[meses-1], recomendacion: recomendacion + ` | IA: ${aiRec}` };
+    const userData = data.filter(row => row.id == id);
+    if (userData.length === 0) return { projection: 'No se encontraron datos', recomendacion: 'Verifica el ID' };
+    
+    const ingresos = userData.filter(r => r.tipo === 'ingreso').reduce((s, r) => s + r.monto, 0);
+    const gastos = userData.filter(r => r.tipo === 'gasto').reduce((s, r) => s + r.monto, 0);
+    const saldoActual = ingresos - gastos;
+    const saldoFinal = saldoActual * Math.pow(1.02, parseInt(meses));
+    
+    return {
+        projection: `Proyección ${meses} meses: Saldo estimado $${saldoFinal.toLocaleString('es-MX', {minimumFractionDigits: 2})}. Actual: $${saldoActual.toLocaleString('es-MX', {minimumFractionDigits: 2})}.`,
+        recomendacion: await generateAIRecommendation({ saldoActual, saldoFinal, meses }, 'proyección financiera personal')
+    };
 }
 
 async function projectEmpresa(data, trimestres, id) {
-  const companyData = data.filter(row => row.id === id);
-  const ventas = companyData.filter(row => row.tipo === 'ingreso').reduce((sum, row) => sum + row.monto, 0);
-  const costos = companyData.filter(row => row.tipo === 'gasto').reduce((sum, row) => sum + row.monto, 0);
-  const ebitda = ventas - costos;
-  const projection = Array.from({length: trimestres}, (_, i) => ebitda * (1 + 0.1 * i));
-  const recomendacion = `Si aumentas la inversión en "ventas" en un 10%, el EBITDA podría subir a ${projection[trimestres-1] * 1.1}.`;
-  const aiRec = await generateAIRecommendation(companyData, `Proyección EBITDA a ${trimestres} trimestres`);
-  return { projection: projection[trimestres-1], recomendacion: recomendacion + ` | IA: ${aiRec}` };
+    const empresaData = data.filter(row => row.id == id);
+    if (empresaData.length === 0) return { projection: 'No se encontraron datos', recomendacion: 'Verifica el ID' };
+    
+    const ingresos = empresaData.filter(r => r.tipo === 'ingreso').reduce((s, r) => s + r.monto, 0);
+    const gastos = empresaData.filter(r => r.tipo === 'gasto').reduce((s, r) => s + r.monto, 0);
+    const saldoActual = ingresos - gastos;
+    const saldoFinal = saldoActual * Math.pow(1.05, parseInt(trimestres));
+    
+    return {
+        projection: `Proyección ${trimestres} trimestres: $${saldoFinal.toLocaleString('es-MX', {minimumFractionDigits: 2})}`,
+        recomendacion: await generateAIRecommendation({ saldoActual, saldoFinal, trimestres }, 'proyección empresarial')
+    };
 }
 
-async function simulatePersonal(data, cambioGasto, categoria) {
-  const totalGastoCategoria = data.filter(row => row.categoria === categoria && row.tipo === 'gasto').reduce((sum, row) => sum + row.monto, 0);
-  const nuevoGasto = totalGastoCategoria - cambioGasto;
-  const excedenteAnual = cambioGasto * 12;
-  const recomendacion = `Utiliza ese excedente para invertir en "Educación" o reducir una deuda.`;
-  const context = data.filter(row => row.categoria === categoria);
-  const aiRec = await generateAIRecommendation(context, `Simulación de reducción en ${categoria}`);
-  return { simulacion: `Excedente anual: ${excedenteAnual}`, recomendacion: recomendacion + ` | IA: ${aiRec}` };
+// SIMULACIONES
+async function simulatePersonal(data, cambio, categoria) {
+    const total = data.filter(r => r.categoria === categoria).reduce((s, r) => s + r.monto, 0);
+    const nuevoTotal = total + parseFloat(cambio);
+    const pct = total !== 0 ? ((nuevoTotal - total) / total * 100).toFixed(2) : 0;
+    
+    return {
+        simulacion: `"${categoria}": Actual $${total.toLocaleString('es-MX', {minimumFractionDigits: 2})}, Nuevo $${nuevoTotal.toLocaleString('es-MX', {minimumFractionDigits: 2})} (${pct > 0 ? '+' : ''}${pct}%)`,
+        recomendacion: await generateAIRecommendation({ categoria, total, nuevoTotal, cambio }, 'simulación personal')
+    };
 }
 
-async function simulateEmpresa(data, cambioCosto, categoria) {
-  const totalCostoCategoria = data.filter(row => row.categoria === categoria && row.tipo === 'gasto').reduce((sum, row) => sum + row.monto, 0);
-  const nuevoCosto = totalCostoCategoria - cambioCosto;
-  const margenNetoMejora = (cambioCosto / totalCostoCategoria) * 100;
-  const recomendacion = `Evalúa la migración a un esquema de home office parcial para capitalizar ese ${margenNetoMejora.toFixed(2)}% en I+D.`;
-  const context = data.filter(row => row.categoria === categoria);
-  const aiRec = await generateAIRecommendation(context, `Simulación de reducción en ${categoria}`);
-  return { simulacion: `Margen neto aumenta en ${margenNetoMejora.toFixed(2)}%`, recomendacion: recomendacion + ` | IA: ${aiRec}` };
+async function simulateEmpresa(data, cambio, categoria) {
+    const total = data.filter(r => r.categoria === categoria).reduce((s, r) => s + r.monto, 0);
+    const nuevoTotal = total + parseFloat(cambio);
+    
+    return {
+        simulacion: `"${categoria}": Nuevo total $${nuevoTotal.toLocaleString('es-MX', {minimumFractionDigits: 2})}`,
+        recomendacion: await generateAIRecommendation({ categoria, total, nuevoTotal }, 'simulación empresarial')
+    };
 }
 
+// ANÁLISIS
 async function analyzePersonal(data, id) {
-  const userData = data.filter(row => row.id === id);
-  const transporteGasto = userData.filter(row => row.categoria === 'Transporte' && row.tipo === 'gasto').reduce((sum, row) => sum + row.monto, 0);
-  const recomendacion = `Evalúa la opción de transporte público o la negociación de un nuevo seguro para reducir el gasto.`;
-  const aiRec = await generateAIRecommendation(userData, `Análisis de gastos para ${id}`);
-  return { analisis: `Gasto en "Transporte": ${transporteGasto}`, recomendacion: recomendacion + ` | IA: ${aiRec}` };
+    const userData = data.filter(row => row.id == id);
+    if (userData.length === 0) return { analisis: 'Sin datos', recomendacion: 'Verifica el ID' };
+    
+    const ingresos = userData.filter(r => r.tipo === 'ingreso').reduce((s, r) => s + r.monto, 0);
+    const gastos = userData.filter(r => r.tipo === 'gasto').reduce((s, r) => s + r.monto, 0);
+    const balance = ingresos - gastos;
+    const tasaAhorro = ingresos > 0 ? ((balance / ingresos) * 100).toFixed(2) : 0;
+    
+    return {
+        analisis: `ID ${id}: Ingresos $${ingresos.toLocaleString('es-MX', {minimumFractionDigits: 2})}, Gastos $${gastos.toLocaleString('es-MX', {minimumFractionDigits: 2})}, Balance $${balance.toLocaleString('es-MX', {minimumFractionDigits: 2})}. Ahorro: ${tasaAhorro}%.`,
+        recomendacion: await generateAIRecommendation({ id, ingresos, gastos, balance, tasaAhorro }, 'análisis personal')
+    };
 }
 
 async function analyzeEmpresa(data, id) {
-  const companyData = data.filter(row => row.id === id);
-  const liquidez = companyData.filter(row => row.tipo === 'ingreso').reduce((sum, row) => sum + row.monto, 0) / companyData.filter(row => row.tipo === 'gasto').reduce((sum, row) => sum + row.monto, 0);
-  const recomendacion = liquidez < 1 ? `Negocia con proveedores un plazo de pago de 60 días para mejorar la posición de caja.` : `Mantén la liquidez actual.`;
-  const aiRec = await generateAIRecommendation(companyData, `Análisis de liquidez para ${id}`);
-  return { analisis: `Ratio de Liquidez: ${liquidez.toFixed(2)}`, recomendacion: recomendacion + ` | IA: ${aiRec}` };
+    const empresaData = data.filter(row => row.id == id);
+    if (empresaData.length === 0) return { analisis: 'Sin datos', recomendacion: 'Verifica el ID' };
+    
+    const ingresos = empresaData.filter(r => r.tipo === 'ingreso').reduce((s, r) => s + r.monto, 0);
+    const gastos = empresaData.filter(r => r.tipo === 'gasto').reduce((s, r) => s + r.monto, 0);
+    const utilidad = ingresos - gastos;
+    
+    return {
+        analisis: `Empresa ${id}: Ingresos $${ingresos.toLocaleString('es-MX', {minimumFractionDigits: 2})}, Utilidad $${utilidad.toLocaleString('es-MX', {minimumFractionDigits: 2})}`,
+        recomendacion: await generateAIRecommendation({ id, ingresos, gastos, utilidad }, 'análisis empresarial')
+    };
 }
 
+// COMPARACIONES
 async function comparePersonal(data, categoria, periodo1, periodo2) {
-  const dataP1 = data.filter(row => row.fecha.includes(periodo1) && row.categoria === categoria);
-  const dataP2 = data.filter(row => row.fecha.includes(periodo2) && row.categoria === categoria);
-  const gastoP1 = dataP1.reduce((sum, row) => sum + row.monto, 0);
-  const gastoP2 = dataP2.reduce((sum, row) => sum + row.monto, 0);
-  const recomendacion = `Enfócate en "${categoria}" que es volátil.`;
-  const context = data.filter(row => row.categoria === categoria);
-  const aiRec = await generateAIRecommendation(context, `Comparación de ${categoria} entre ${periodo1} y ${periodo2}`);
-  return { comparacion: `Gasto en ${categoria}: ${periodo1}=${gastoP1}, ${periodo2}=${gastoP2}`, recomendacion: recomendacion + ` | IA: ${aiRec}` };
+    const data1 = data.filter(r => r.fecha?.startsWith(periodo1) && r.categoria === categoria);
+    const data2 = data.filter(r => r.fecha?.startsWith(periodo2) && r.categoria === categoria);
+    
+    const total1 = data1.reduce((s, r) => s + r.monto, 0);
+    const total2 = data2.reduce((s, r) => s + r.monto, 0);
+    const diferencia = total2 - total1;
+    
+    return {
+        comparacion: `"${categoria}": ${periodo1} ($${total1.toLocaleString('es-MX', {minimumFractionDigits: 2})}) vs ${periodo2} ($${total2.toLocaleString('es-MX', {minimumFractionDigits: 2})}). Dif: ${diferencia >= 0 ? '+' : ''}$${diferencia.toLocaleString('es-MX', {minimumFractionDigits: 2})}.`,
+        recomendacion: await generateAIRecommendation({ categoria, periodo1, periodo2, total1, total2, diferencia }, 'comparación personal')
+    };
 }
 
-async function compareEmpresa(data, categoria, id) {
-  const companyData = data.filter(row => row.id === id && row.categoria === categoria);
-  const recomendacion = `Revisa la estructura de precios y evalúa si el costo de adquisición de clientes es sostenible.`;
-  const aiRec = await generateAIRecommendation(companyData, `Comparación de ${categoria} para ${id}`);
-  return { comparacion: `Costo en "${categoria}": ${companyData.reduce((sum, row) => sum + row.monto, 0)}`, recomendacion: recomendacion + ` | IA: ${aiRec}` };
+async function compareEmpresa(data, categoria, periodo1, periodo2, id) {
+    const data1 = data.filter(r => r.fecha?.startsWith(periodo1) && r.categoria === categoria && (!id || r.id == id));
+    const data2 = data.filter(r => r.fecha?.startsWith(periodo2) && r.categoria === categoria && (!id || r.id == id));
+    
+    const total1 = data1.reduce((s, r) => s + r.monto, 0);
+    const total2 = data2.reduce((s, r) => s + r.monto, 0);
+    const variacion = total2 - total1;
+    
+    return {
+        comparacion: `"${categoria}": ${periodo1} vs ${periodo2}. Variación: ${variacion >= 0 ? '+' : ''}$${variacion.toLocaleString('es-MX', {minimumFractionDigits: 2})}`,
+        recomendacion: await generateAIRecommendation({ categoria, periodo1, periodo2, total1, total2, variacion }, 'comparación empresarial')
+    };
 }
 
-module.exports = { projectPersonal, projectEmpresa, simulatePersonal, simulateEmpresa, analyzePersonal, analyzeEmpresa, comparePersonal, compareEmpresa };
+module.exports = {
+    projectPersonal,
+    projectEmpresa,
+    simulatePersonal,
+    simulateEmpresa,
+    analyzePersonal,
+    analyzeEmpresa,
+    comparePersonal,
+    compareEmpresa
+};
