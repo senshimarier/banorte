@@ -1,0 +1,457 @@
+=====================================================================
+BANORTE FINANCIAL ASSISTANT - AI-POWERED FINANCIAL ANALYSIS SYSTEM
+=====================================================================
+
+---------------------------------------------------------------------
+1. GENERAL DESCRIPTION
+---------------------------------------------------------------------
+The Banorte Financial Assistant is a comprehensive web application that 
+provides intelligent financial analysis, projections, and recommendations 
+for both personal and business finances. The system processes large 
+financial datasets (1M+ records) and delivers AI-enhanced insights.
+
+Key Features:
+- Personal and Business Financial Projections
+- Financial Simulations and Scenario Analysis
+- Comprehensive Financial Health Analysis
+- Period-to-Period Comparative Analysis
+- Financial Data Consultation with Filters
+- AI-Powered Recommendations (Gemini API integration)
+- Interactive Dashboard with Real-time Analytics
+
+The application consists of:
+- FRONTEND: Built with HTML5, CSS3, and Vanilla JavaScript
+- BACKEND: Node.js + Express REST API with AI integration
+- DATA LAYER: CSV-based financial data processing (2M+ records)
+
+---------------------------------------------------------------------
+2. PROJECT STRUCTURE
+---------------------------------------------------------------------
+/banorte
+│
+├── /frontend
+│   ├── index.html                  # Login page
+│   ├── dashboard.html              # Main dashboard
+│   ├── proyectar.html              # Financial projections
+│   ├── simular.html                # Financial simulations
+│   ├── analizar.html               # Financial analysis
+│   ├── comparar.html               # Comparative analysis
+│   ├── consultar.html              # Data consultation
+│   │
+│   ├── /css
+│   │   ├── login.css               # Login styles
+│   │   ├── dashboard.css           # Dashboard styles
+│   │   └── styles.css              # Global styles (Banorte theme)
+│   │
+│   └── /js
+│       ├── login.js                # Authentication logic
+│       ├── auth.js                 # Session management
+│       ├── api.js                  # API communication layer
+│       └── utils.js                # Helper functions
+│
+├── /backend
+│   ├── /src
+│   │   ├── app.js                  # Express server setup
+│   │   │
+│   │   ├── /controllers
+│   │   │   ├── financialController.js  # Financial operations
+│   │   │   └── chatController.js       # AI chat handler
+│   │   │
+│   │   ├── /routes
+│   │   │   ├── financialRoutes.js      # API routes
+│   │   │   └── chatRoutes.js           # Chat routes
+│   │   │
+│   │   ├── /services
+│   │   │   ├── calculationService.js   # Financial calculations
+│   │   │   └── aiService.js            # AI integration (Gemini)
+│   │   │
+│   │   └── /utils
+│   │       └── dataLoader.js           # CSV data loader
+│   │
+│   ├── /data
+│   │   ├── finanzas_personales.csv     # Personal finances (1M rows)
+│   │   └── finanzas_empresa.csv        # Business finances (1M rows)
+│   │
+│   ├── package.json
+│   ├── .env                            # Environment variables
+│   └── .gitignore
+│
+└── README.md
+
+---------------------------------------------------------------------
+3. BACKEND FUNCTIONALITY
+---------------------------------------------------------------------
+The backend is a RESTful API built with Node.js and Express.
+
+Main Dependencies:
+- express (v4.18+): HTTP server and routing
+- cors: Cross-Origin Resource Sharing
+- dotenv (v16+): Environment variable management
+- csv-parser (v3+): CSV file processing
+- mathjs (v12+): Mathematical operations
+- node-fetch: HTTP requests to external APIs
+
+API Structure:
+BASE URL: http://localhost:5000/api/v1
+
+Personal Finance Endpoints:
+- GET  /personal/proyectar     # Financial projections
+- GET  /personal/consultar     # Query financial data
+- POST /personal/simular       # Simulate financial scenarios
+- GET  /personal/analizar      # Analyze financial health
+- GET  /personal/comparar      # Compare periods
+
+Business Finance Endpoints:
+- GET  /empresa/proyectar      # Business projections
+- GET  /empresa/consultar      # Query business data
+- POST /empresa/simular        # Simulate business scenarios
+- GET  /empresa/analizar       # Analyze business performance
+- GET  /empresa/comparar       # Compare business periods
+
+AI Integration:
+The system uses Google Gemini AI (via generativelanguage.googleapis.com)
+to provide intelligent financial recommendations. Falls back to 
+predefined expert recommendations if AI is unavailable.
+
+Data Processing:
+- Loads 2M+ financial records from CSV files
+- Filters and aggregates data in real-time
+- Calculates projections using compound growth models
+- Generates AI-enhanced recommendations
+
+---------------------------------------------------------------------
+4. FRONTEND FUNCTIONALITY
+---------------------------------------------------------------------
+The frontend provides an intuitive interface following Banorte's 
+official design guidelines (color scheme: #E30613 red + white).
+
+Main Pages:
+1. LOGIN (index.html)
+   - User authentication
+   - Session management
+   - Redirects to dashboard
+
+2. DASHBOARD (dashboard.html)
+   - Quick access to all financial tools
+   - Financial overview cards
+   - Navigation menu
+
+3. PROYECTAR (proyectar.html)
+   - Personal: Monthly projections (1-12 months)
+   - Business: Quarterly projections (1-8 quarters)
+   - Growth rate calculations
+   - AI-powered recommendations
+
+4. SIMULAR (simular.html)
+   - What-if scenario analysis
+   - Category-based simulations
+   - Impact calculations
+   - Strategic recommendations
+
+5. ANALIZAR (analizar.html)
+   - Financial health analysis
+   - Income vs. Expenses breakdown
+   - Savings rate calculation
+   - Personalized recommendations
+
+6. COMPARAR (comparar.html)
+   - Period-to-period comparison
+   - Trend analysis
+   - Percentage change calculations
+   - Historical insights
+
+7. CONSULTAR (consultar.html)
+   - Data filtering by category
+   - Date range queries
+   - Total calculations
+   - Record counting
+
+Styling Features:
+- Responsive design (mobile-first approach)
+- Banorte official colors and branding
+- Smooth animations and transitions
+- Loading states and error handling
+- Professional financial data presentation
+
+---------------------------------------------------------------------
+5. HOW TO USE
+---------------------------------------------------------------------
+
+INSTALLATION:
+1. Clone the repository:
+   git clone https://github.com/yourusername/banorte-financial-assistant.git
+   cd banorte-financial-assistant
+
+2. Install backend dependencies:
+   cd backend
+   npm install
+
+3. Configure environment variables:
+   Create a `.env` file in the backend directory:
+   
+   GEMINI_API_KEY=your_gemini_api_key_here
+   PORT=5000
+
+   To get a Gemini API key:
+   - Visit https://aistudio.google.com/app/apikey
+   - Create a new API key
+   - Copy and paste into .env
+
+RUNNING THE APPLICATION:
+1. Start the backend server:
+   cd backend
+   npm start
+   
+   You should see:
+   ✅ Servidor corriendo en puerto 5000
+   ✅ Rutas disponibles en http://localhost:5000/api/v1
+   Datos cargados: 2000000 filas
+
+2. Open the frontend:
+   - Option A: Use Live Server (VS Code extension)
+   - Option B: Open frontend/index.html directly in browser
+   - Option C: Serve with: python -m http.server 8080
+
+3. Login credentials:
+   - User ID: 12 (or any ID from 1-100)
+   - Password: demo123 (or any password)
+
+4. Navigate through the financial tools using the dashboard menu.
+
+TESTING ENDPOINTS:
+You can test the API directly:
+
+# Test projection
+http://localhost:5000/api/v1/personal/proyectar?meses=6&usuario_id=12
+
+# Test analysis
+http://localhost:5000/api/v1/empresa/analizar?empresa_id=E04
+
+---------------------------------------------------------------------
+6. DATA STRUCTURE
+---------------------------------------------------------------------
+
+Personal Finance CSV (finanzas_personales.csv):
+- id: User identifier (1-100)
+- fecha: Transaction date (YYYY-MM-DD)
+- categoria: Category (Salario, Alimentación, Transporte, etc.)
+- tipo: Type (ingreso/gasto)
+- monto: Amount (numeric)
+
+Business Finance CSV (finanzas_empresa.csv):
+- id: Company identifier (E001-E100)
+- fecha: Transaction date (YYYY-MM-DD)
+- categoria: Category (Ventas, Nómina, Marketing, etc.)
+- tipo: Type (ingreso/gasto)
+- monto: Amount (numeric)
+
+Each CSV contains 1,000,000 records for comprehensive analysis.
+
+---------------------------------------------------------------------
+7. AI INTEGRATION
+---------------------------------------------------------------------
+
+The system integrates Google Gemini AI for intelligent recommendations.
+
+Configuration:
+- API: Google Generative AI (v1beta)
+- Model: gemini-1.5-pro-latest (fallback: gemini-1.5-flash)
+- Temperature: 0.7
+- Max Tokens: 250-500
+
+Fallback System:
+If Gemini AI is unavailable (API key issues, rate limits, etc.),
+the system automatically uses predefined expert financial recommendations
+ensuring uninterrupted service.
+
+AI Recommendation Types:
+- Personal Financial Projections
+- Business Financial Projections
+- Personal Simulations
+- Business Simulations
+- Personal Financial Analysis
+- Business Performance Analysis
+- Personal Period Comparisons
+- Business Period Comparisons
+
+---------------------------------------------------------------------
+8. TECHNOLOGIES USED
+---------------------------------------------------------------------
+
+Backend:
+- Node.js (v18+)
+- Express.js (v4.18+)
+- CSV-Parser (v3+)
+- Math.js (v12+)
+- Dotenv (v16+)
+- CORS
+
+Frontend:
+- HTML5
+- CSS3 (Custom Banorte theme)
+- JavaScript (ES6+)
+- Fetch API
+- LocalStorage API
+
+AI/ML:
+- Google Gemini API (generativelanguage.googleapis.com)
+
+Data:
+- CSV files (2M+ records)
+- Real-time data filtering and aggregation
+
+---------------------------------------------------------------------
+9. API REFERENCE
+---------------------------------------------------------------------
+
+PERSONAL ENDPOINTS:
+
+GET /api/v1/personal/proyectar
+Query params: meses (1-12), usuario_id
+Response: { projection, recomendacion }
+
+GET /api/v1/personal/consultar
+Query params: categoria, fecha_inicio, fecha_fin, usuario_id
+Response: { total, registros, recomendacion }
+
+POST /api/v1/personal/simular
+Body: { cambio, categoria }
+Response: { simulacion, recomendacion }
+
+GET /api/v1/personal/analizar
+Query params: usuario_id
+Response: { analisis, recomendacion }
+
+GET /api/v1/personal/comparar
+Query params: categoria, periodo1, periodo2
+Response: { comparacion, recomendacion }
+
+BUSINESS ENDPOINTS:
+
+GET /api/v1/empresa/proyectar
+Query params: trimestres (1-8), empresa_id
+Response: { projection, recomendacion }
+
+GET /api/v1/empresa/consultar
+Query params: categoria, fecha_inicio, fecha_fin, empresa_id
+Response: { total, registros, recomendacion }
+
+POST /api/v1/empresa/simular
+Body: { cambio, categoria }
+Response: { simulacion, recomendacion }
+
+GET /api/v1/empresa/analizar
+Query params: empresa_id
+Response: { analisis, recomendacion }
+
+GET /api/v1/empresa/comparar
+Query params: categoria, periodo1, periodo2, empresa_id
+Response: { comparacion, recomendacion }
+
+---------------------------------------------------------------------
+10. TROUBLESHOOTING
+---------------------------------------------------------------------
+
+Common Issues:
+
+1. "404 Not Found" errors:
+   - Ensure backend is running on port 5000
+   - Check that routes are properly configured in app.js
+   - Verify API calls match the route structure
+
+2. "CORS Error":
+   - Ensure cors() middleware is enabled in app.js
+   - Check that frontend is accessing correct backend URL
+
+3. "AI recommendations not working":
+   - Verify GEMINI_API_KEY in .env file
+   - Check API key has proper permissions
+   - System will use fallback recommendations if AI fails
+
+4. "Cannot read CSV files":
+   - Ensure CSV files are in backend/data/ directory
+   - Check file paths in dataLoader.js
+   - Verify CSV file format matches expected structure
+
+5. "Port 5000 already in use":
+   - Change PORT in .env file
+   - Update API_BASE_URL in frontend/js/api.js
+
+---------------------------------------------------------------------
+11. SECURITY CONSIDERATIONS
+---------------------------------------------------------------------
+
+- Never commit .env files to version control
+- API keys should be stored in environment variables only
+- Use HTTPS in production environments
+- Implement proper authentication and authorization
+- Validate and sanitize all user inputs
+- Use rate limiting for API endpoints
+- Implement proper CORS policies
+
+---------------------------------------------------------------------
+12. FUTURE ENHANCEMENTS
+---------------------------------------------------------------------
+
+Planned Features:
+- User authentication with JWT tokens
+- Database integration (MongoDB/PostgreSQL)
+- Real-time data updates with WebSockets
+- Advanced data visualization (Chart.js)
+- Export reports to PDF/Excel
+- Mobile app (React Native)
+- Multi-language support
+- Advanced AI features (predictive analytics)
+- Integration with real banking APIs
+
+---------------------------------------------------------------------
+13. AUTHORS / DEVELOPERS
+---------------------------------------------------------------------
+
+Developed by:
+- Guerrero Calderon Maria Fernanda
+- Eli Gabriel Gomez Aguirre
+- Navarro Silva Alessandro
+- Gonzalez de Leon Sebastian
+
+Institution: [Your University/Institution Name]
+Course: [Course Name/Code]
+Academic Year: 2024-2025
+
+This project was created for educational purposes and as a demonstration
+of full-stack web development capabilities with AI integration.
+
+---------------------------------------------------------------------
+14. LICENSE
+---------------------------------------------------------------------
+
+This project is developed for educational purposes.
+All rights reserved to the original authors.
+
+Banorte® is a registered trademark of Grupo Financiero Banorte.
+This project is not affiliated with or endorsed by Banorte.
+
+---------------------------------------------------------------------
+15. CONTACT & SUPPORT
+---------------------------------------------------------------------
+
+For questions, issues, or contributions:
+- GitHub: [Your GitHub Repository URL]
+- Email: [Your Contact Email]
+
+Report Issues:
+Please use the GitHub Issues tab to report bugs or request features.
+
+---------------------------------------------------------------------
+16. ACKNOWLEDGMENTS
+---------------------------------------------------------------------
+
+- Google Gemini AI for intelligent recommendations
+- Banorte for design inspiration
+- Node.js and Express.js communities
+- All open-source contributors
+
+=====================================================================
+Last Updated: October 26, 2025
+Version: 1.0.0
+=====================================================================
